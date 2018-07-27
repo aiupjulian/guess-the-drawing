@@ -1,0 +1,20 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+#gaming-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.canvas {
+    width: 100%;
+    height: 90%;
+}
+
+.input {
+    width: 100%;
+    height: 10%;
+}
