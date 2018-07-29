@@ -15,8 +15,8 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
-    socket.on('chat message', (msg) => {
-        console.log('message: ' + msg);
+    socket.on('message', (msg) => {
+        socket.broadcast.emit('message', msg);
     });
     socket.on('canvas', (canvas) => {
         socket.broadcast.emit('canvas', canvas);

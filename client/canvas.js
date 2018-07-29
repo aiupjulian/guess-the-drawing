@@ -97,21 +97,43 @@ function getTouchPos(canvasDom, touchEvent) {
 }
 
 // Prevent scrolling when touching the canvas
-document.body.addEventListener("touchstart", function (e) {
-    if (e.target == canvas) {
-        e.preventDefault();
+let blockCanvasScroll = false;
+document.body.addEventListener(
+    "touchstart",
+    (e) => {
+        if (e.target == canvas) {
+            blockCanvasScroll = true;
+        }
+    },
+    {
+        capture: false,
+        passive: false
     }
-}, false);
-document.body.addEventListener("touchend", function (e) {
-    if (e.target == canvas) {
-        e.preventDefault();
+);
+document.body.addEventListener(
+    "touchend",
+    (e) => {
+        if (e.target == canvas) {
+            blockCanvasScroll = false;
+        }
+    },
+    {
+        capture: false,
+        passive: false
     }
-}, false);
-document.body.addEventListener("touchmove", function (e) {
-    if (e.target == canvas) {
-        e.preventDefault();
+);
+document.body.addEventListener(
+    "touchmove",
+    (e) => {
+        if (blockCanvasScroll) {
+            e.preventDefault();
+        }
+    },
+    {
+        capture: false,
+        passive: false
     }
-}, false);
+);
 
 function clearCanvas() {
     canvas.width = canvas.width;
