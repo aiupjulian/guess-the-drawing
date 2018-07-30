@@ -20,6 +20,12 @@ io.on('connection', (socket) => {
     socket.on('drawing', (data) => {
         socket.broadcast.emit('drawing', data);
     });
+    socket.on('clearCanvas', () => {
+        socket.broadcast.emit('clearCanvas');
+    });
+    socket.on('undoCanvas', () => {
+        socket.broadcast.emit('undoCanvas');
+    });
 });
 
 http.listen(3000, () => {

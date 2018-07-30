@@ -3,6 +3,14 @@
 */
 * {
     box-sizing: border-box;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+html {
+    -o-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 html, body {
@@ -30,21 +38,29 @@ html, body {
     top: 0;
 }
 
-.colors {
+.options {
+    width: 100%;
     position: fixed;
+    display: flex;
+    justify-content: center;
+    margin-top: 2px;
 }
 
-.color {
-    display: inline-block;
+.option {
+    border-radius: 5px;
     height: 48px;
     width: 48px;
+    font-size: 14px;
+    line-height: 48px;
+    cursor: pointer;
 }
 
-.color.black { background-color: black; }
-.color.red { background-color: red; }
-.color.green { background-color: green; }
-.color.blue { background-color: blue; }
-.color.yellow { background-color: yellow; }
+.option { background-color: gray; }
+.option.black { background-color: black; }
+.option.red { background-color: red; }
+.option.green { background-color: green; }
+.option.blue { background-color: blue; }
+.option.yellow { background-color: yellow; }
 
 /**
 * Chat
@@ -57,12 +73,12 @@ html, body {
     height: 30%;
 }
 
-#messages {
+.messages {
     overflow-y: scroll;
     height: auto;
     margin: 0;
 }
 
-#message-input {
+.message-input {
     height: auto;
 }
