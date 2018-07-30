@@ -19,6 +19,25 @@ html, body {
     padding: 0;
 }
 
+/* Pages */
+ul {
+    list-style: none;
+    word-wrap: break-word;
+}
+
+.pages {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.page {
+    height: 100%;
+    position: absolute;
+    width: 100%;
+}
+
 /**
 * Canvas
 */
@@ -53,6 +72,7 @@ html, body {
     font-size: 14px;
     line-height: 48px;
     cursor: pointer;
+    font-weight: bold;
 }
 
 .option { background-color: gray; }

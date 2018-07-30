@@ -10,22 +10,49 @@ app.get('/', (req, res) => {
     res.sendFile('index.html');
 });
 
+const usersEmit = () => {
+    io.emit(
+        'users',
+        Object.values(io.sockets.connected)
+            .filter((socket) => socket.username)
+            .map(({ username, score }) => ({ username, score }))
+    );
+};
+
 io.on('connection', (socket) => {
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
+    socket.on('add user', (username) => {
+        socket.username = username;
+        socket.score = 0;
+        usersEmit();
     });
-    socket.on('message', (msg) => {
-        socket.broadcast.emit('message', msg);
+
+    socket.on('start game', (data) => {
+        socket.broadcast.emit('start game', data);
+        setTimeout(() => {
+            io.emit('start play', io.sockets)
+        }, 9000);
     });
+
     socket.on('drawing', (data) => {
         socket.broadcast.emit('drawing', data);
     });
-    socket.on('clearCanvas', () => {
-        socket.broadcast.emit('clearCanvas');
+
+    socket.on('clear canvas', () => {
+        socket.broadcast.emit('clear canvas');
     });
-    socket.on('undoCanvas', () => {
-        socket.broadcast.emit('undoCanvas');
+
+    socket.on('undo canvas', () => {
+        socket.broadcast.emit('undo canvas');
     });
+
+    socket.on('message', (data) => {
+        socket.broadcast.emit('message', {
+            username: socket.username,
+            message: data
+        });
+    });
+
+    socket.on('disconnect', usersEmit);
 });
 
 http.listen(3000, () => {

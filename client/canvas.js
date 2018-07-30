@@ -182,10 +182,10 @@ const clearCanvas = (emit) => {
     canvas.width = canvas.width;
     drawnLinesArray = [];
     if (!emit) { return; }
-    socket.emit('clearCanvas');
+    socket.emit('clear canvas');
 }
 document.getElementsByClassName('clear')[0].addEventListener('click', () => { clearCanvas(true) }, false);
-socket.on('clearCanvas', clearCanvas);
+socket.on('clear canvas', clearCanvas);
 
 const undoCanvas = (emit) => {
     canvas.width = canvas.width;
@@ -197,10 +197,10 @@ const undoCanvas = (emit) => {
     );
     drawnLineId--;
     if (!emit) { return; }
-    socket.emit('undoCanvas');
+    socket.emit('undo canvas');
 }
 document.getElementsByClassName('undo')[0].addEventListener('click', () => { undoCanvas(true) }, false);
-socket.on('undoCanvas', undoCanvas);
+socket.on('undo canvas', undoCanvas);
 
 const saveDrawnLine = (drawnLine) => {
     drawnLinesArray.push(drawnLine);
