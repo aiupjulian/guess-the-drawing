@@ -11,15 +11,14 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    console.log('a user connected');
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
     socket.on('message', (msg) => {
         socket.broadcast.emit('message', msg);
     });
-    socket.on('canvas', (canvas) => {
-        socket.broadcast.emit('canvas', canvas);
+    socket.on('drawing', (data) => {
+        socket.broadcast.emit('drawing', data);
     });
 });
 

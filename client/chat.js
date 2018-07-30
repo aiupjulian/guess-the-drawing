@@ -9,7 +9,6 @@ messageInput.onkeypress = (e) => {
 }
 
 socket.on('message', (msg) => {
-    console.log(msg);
     addMessage(msg)
 });
 

@@ -1,91 +1,90 @@
-// Set up the canvas
-var canvas = document.getElementById("gaming-canvas");
-var ctx = canvas.getContext("2d");
-ctx.strokeStyle = "#222222";
-ctx.lineWith = 2;
+'use strict';
 
-var s = getComputedStyle(canvas);
-var w = s.width;
-var h = s.height;
-canvas.width = w.split('px')[0];
-canvas.height = h.split('px')[0];
+// Set up the canvas
+let canvas = document.getElementsByClassName('whiteboard')[0];
+let context = canvas.getContext('2d');
+
+// Set up the colors
+const onColorUpdate = (event) => {
+    current.color = event.target.className.split(' ')[1];
+};
+let colors = document.getElementsByClassName('color');
+for (let i = 0; i < colors.length; i++){
+    colors[i].addEventListener('click', onColorUpdate, false);
+}
+
+let current = {
+    color: 'black'
+};
+
+// // limit the number of events per second
+// const throttle = (callback, delay) => {
+//     let previousCall = new Date().getTime();
+//     return () => {
+//         const time = new Date().getTime();
+//         if ((time - previousCall) >= delay) {
+//             previousCall = time;
+//             callback.apply(null, arguments); // ???
+//         }
+//     };
+// }
 
 // Set up mouse events for drawing
-var drawing = false;
-var mousePos = { x: 0, y: 0 };
-var lastPos = mousePos;
-canvas.addEventListener("mousedown", function (e) {
+let drawing = false;
+
+const onMouseDown = (event) => {
     drawing = true;
-    lastPos = getMousePos(canvas, e);
-}, false);
-canvas.addEventListener("mouseup", function (e) {
+    current.x = event.clientX;
+    current.y = event.clientY;
+}
+
+const onMouseUp = (event) => {
+    if (!drawing) { return; }
     drawing = false;
-    var dataUrl = canvas.toDataURL();
-    socket.emit('canvas', dataUrl);
-}, false);
-canvas.addEventListener("mousemove", function (e) {
-    mousePos = getMousePos(canvas, e);
-}, false);
-
-// Get the position of the mouse relative to the canvas
-function getMousePos(canvasDom, mouseEvent) {
-    var rect = canvasDom.getBoundingClientRect();
-    return {
-        x: mouseEvent.clientX - rect.left,
-        y: mouseEvent.clientY - rect.top
-    };
 }
 
-// Get a regular interval for drawing to the screen
-window.requestAnimFrame = (function (callback) {
-    return window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        window.msRequestAnimaitonFrame ||
-        function (callback) {
-            window.setTimeout(callback, 1000 / 60);
-        };
-})();
-
-// Draw to the canvas
-function renderCanvas() {
-    if (drawing) {
-        ctx.moveTo(lastPos.x, lastPos.y);
-        ctx.lineTo(mousePos.x, mousePos.y);
-        ctx.stroke();
-        lastPos = mousePos;
-    }
+const onMouseMove = (event) => {
+    if (!drawing) { return; }
+    drawLine(current.x, current.y, event.clientX, event.clientY, current.color, true);
+    current.x = event.clientX;
+    current.y = event.clientY;
 }
 
-// Allow for animation
-(function drawLoop() {
-    requestAnimFrame(drawLoop);
-    renderCanvas();
-})();
+canvas.addEventListener('mousedown', onMouseDown, false);
+canvas.addEventListener('mouseup', onMouseUp, false);
+canvas.addEventListener('mouseout', onMouseUp, false);
+canvas.addEventListener('mousemove', onMouseMove, false);
 
 // Set up touch events for mobile, etc
-canvas.addEventListener("touchstart", function (e) {
-    mousePos = getTouchPos(canvas, e);
-    var touch = e.touches[0];
-    var mouseEvent = new MouseEvent("mousedown", {
+const onTouchStart = (event) => {
+    var touch = event.touches[0];
+    var mouseEvent = new MouseEvent('mousedown', {
         clientX: touch.clientX,
         clientY: touch.clientY
     });
     canvas.dispatchEvent(mouseEvent);
-}, false);
-canvas.addEventListener("touchend", function (e) {
-    var mouseEvent = new MouseEvent("mouseup", {});
+}
+
+const onTouchEnd =  (event) => {
+    const mouseEvent = new MouseEvent('mouseup', {});
     canvas.dispatchEvent(mouseEvent);
-}, false);
-canvas.addEventListener("touchmove", function (e) {
-    var touch = e.touches[0];
-    var mouseEvent = new MouseEvent("mousemove", {
-        clientX: touch.clientX,
-        clientY: touch.clientY
-    });
+}
+
+const onTouchMove = (event) => {
+    const touch = event.touches[0];
+    const mouseEvent = new MouseEvent(
+        'mousemove',
+        {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        }
+    );
     canvas.dispatchEvent(mouseEvent);
-}, false);
+}
+
+canvas.addEventListener('touchstart', onTouchStart, false);
+canvas.addEventListener('touchend', onTouchEnd, false);
+canvas.addEventListener('touchmove', onTouchMove, false);
 
 // Get the position of a touch relative to the canvas
 function getTouchPos(canvasDom, touchEvent) {
@@ -99,9 +98,9 @@ function getTouchPos(canvasDom, touchEvent) {
 // Prevent scrolling when touching the canvas
 let blockCanvasScroll = false;
 document.body.addEventListener(
-    "touchstart",
-    (e) => {
-        if (e.target == canvas) {
+    'touchstart',
+    (event) => {
+        if (event.target == canvas) {
             blockCanvasScroll = true;
         }
     },
@@ -111,9 +110,9 @@ document.body.addEventListener(
     }
 );
 document.body.addEventListener(
-    "touchend",
-    (e) => {
-        if (e.target == canvas) {
+    'touchend',
+    (event) => {
+        if (event.target == canvas) {
             blockCanvasScroll = false;
         }
     },
@@ -123,10 +122,10 @@ document.body.addEventListener(
     }
 );
 document.body.addEventListener(
-    "touchmove",
-    (e) => {
+    'touchmove',
+    (event) => {
         if (blockCanvasScroll) {
-            e.preventDefault();
+            event.preventDefault();
         }
     },
     {
@@ -135,19 +134,50 @@ document.body.addEventListener(
     }
 );
 
-function clearCanvas() {
-    canvas.width = canvas.width;
+const drawLine = (x0, y0, x1, y1, color, emit) => {
+    context.beginPath();
+    context.moveTo(x0, y0);
+    context.lineTo(x1, y1);
+    context.strokeStyle = color;
+    context.lineWidth = 2;
+    context.stroke();
+    context.closePath();
+
+    if (!emit) { return; }
+    const w = canvas.width;
+    const h = canvas.height;
+
+    socket.emit(
+        'drawing',
+        {
+            x0: x0 / w,
+            y0: y0 / h,
+            x1: x1 / w,
+            y1: y1 / h,
+            color: color
+        }
+    );
 }
 
-// window.setInterval(() => {
-//     var dataUrl = canvas.toDataURL();
-//     socket.emit('canvas', dataUrl);
-// }, 5000);
+// receive drawings from other users
+const onDrawingEvent = (data) => {
+    const w = canvas.width;
+    const h = canvas.height;
+    drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color);
+}
 
-socket.on('canvas', (canvas) => {
-    var img = new Image;
-    img.onload = function(){
-        ctx.drawImage(img, 0, 0);
-    };
-    img.src = canvas;
-});
+socket.on('drawing', onDrawingEvent);
+
+// make the canvas fill its parent
+const onResize = () => {
+    const canvasDiv = document.getElementsByClassName('canvas')[0];
+    canvas.width = canvasDiv.offsetWidth;
+    canvas.height = canvasDiv.offsetHeight;
+}
+
+window.addEventListener('resize', onResize, false);
+onResize();
+
+const clearCanvas = () => {
+    canvas.width = canvas.width;
+}
