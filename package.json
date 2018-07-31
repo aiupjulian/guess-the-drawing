@@ -4,9 +4,7 @@
   "description": "",
   "main": "./server/index.js",
   "scripts": {
-    "client": "webpack-dev-server --mode development --devtool inline-source-map --hot --config ./webpack.config.js",
-    "server": "nodemon",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "concurrently -k \"webpack --watch --progress --colors\" \"nodemon ./server/dist/index.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -31,9 +29,12 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.9.1",
     "html-webpack-plugin": "^3.2.0",
+    "node-sass": "^4.9.2",
+    "nodemon": "^1.18.3",
     "sass-loader": "^7.0.3",
     "style-loader": "^0.21.0",
     "webpack": "^4.16.3",
-    "webpack-dev-server": "^3.1.5"
+    "webpack-cli": "^3.1.0",
+    "webpack-serve": "^2.0.2"
   }
 }
