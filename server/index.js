@@ -4,7 +4,7 @@ let app = express();
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
 
-app.use(express.static(process.cwd() + '/client'));
+app.use(express.static("client/dist"));
 
 app.get('/', (req, res) => {
     res.sendFile('index.html');

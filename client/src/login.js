@@ -1,4 +1,4 @@
-let username;
+let selfUsername;
 
 let usernameInput = document.getElementsByClassName('username-input')[0];
 usernameInput.focus();
@@ -6,6 +6,7 @@ usernameInput.onkeypress = (event) => {
     const usernameInputVal = usernameInput.value;
     if (usernameInputVal && event.keyCode == 13) {
         changePage(pages.LOBBY);
+        selfUsername = usernameInputVal;
         socket.emit('add user', usernameInputVal);
         usernameInput.value = '';
     }
@@ -21,3 +22,8 @@ socket.on('users', (users) => {
         usersUl.appendChild(newLi);
     });
 });
+
+let startGameButton = document.getElementsByClassName('start-game')[0];
+startGameButton.onclick = (event) => {
+    changePage(pages.GAME);
+}

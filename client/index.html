@@ -1,59 +1,9 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="styles/style.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="styles/login.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="styles/lobby.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="styles/game.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="styles/score.css" />
-</head>
-<body>
-    <ul class="pages">
-        <li class="page login">
-            <div class="form">
-                <h3 class="title">What's your nickname?</h3>
-                <input class="username-input" type="text" maxlength="10" required />
-            </div>
-        </li>
-        <li class="page lobby">
-            <ul class="users">
-            </ul>
-        </li>
-        <li class="page game">
-            <div class="canvas">
-                <canvas class="whiteboard" height="1" width="1">
-                    Get a better browser, bro.
-                </canvas>
-                <div class="options">
-                    <div class="option color black"></div>
-                    <div class="option color red"></div>
-                    <div class="option color green"></div>
-                    <div class="option color blue"></div>
-                    <div class="option color yellow"></div>
-                    <div class="option undo">UNDO</div>
-                    <div class="option clear">CLEAR</div>
-                </div>
-            </div>
-            <div class="chat">
-                <ul class="messages"></ul>
-                <input class="message-input" autocomplete="off" />
-            </div>
-        </li>
-        <li class="page score">
-
-        </li>
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        var socket = io();
-    </script>
-    <script src="pages.js"></script>
-    <script src="login.js"></script>
-    <script src="game.js"></script>
-    <script src="canvas.js"></script>
-    <script src="chat.js"></script>
-</body>
+    <head>
+        <title> Ideal React Seed </title>
+    </head>
+    <body>
+        <div id="app"></div>
+    </body>
 </html>
