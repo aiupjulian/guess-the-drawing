@@ -1,44 +1,4 @@
 /**
-* Fix user-agent
-*/
-* {
-    box-sizing: border-box;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-}
-
-html {
-    -o-user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-/* Pages */
-ul {
-    list-style: none;
-    word-wrap: break-word;
-}
-
-.pages {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-
-.page {
-    height: 100%;
-    position: absolute;
-    width: 100%;
-}
-
-/**
 * Canvas
 */
 .canvas {

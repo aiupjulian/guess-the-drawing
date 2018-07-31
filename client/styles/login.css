@@ -1,0 +1,17 @@
+.login > .form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+@media screen and (max-width: 720px) {
+    .login > .form {
+        width: 94%;
+        margin: 20px auto;
+    }
+    
+    .login > .form > .username-input {
+        font-size: 20px;
+    }
+}

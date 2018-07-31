@@ -20,7 +20,10 @@ const usersEmit = () => {
 };
 
 io.on('connection', (socket) => {
+    let addedUser = false;
     socket.on('add user', (username) => {
+        if (addedUser) return;
+        addedUser = true;
         socket.username = username;
         socket.score = 0;
         usersEmit();

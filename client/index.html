@@ -5,7 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="styles/style.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="styles/login.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="styles/lobby.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="styles/game.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="styles/score.css" />
 </head>
 <body>
     <ul class="pages">
@@ -19,7 +23,7 @@
             <ul class="users">
             </ul>
         </li>
-        <li class="page play">
+        <li class="page game">
             <div class="canvas">
                 <canvas class="whiteboard" height="1" width="1">
                     Get a better browser, bro.
@@ -39,7 +43,7 @@
                 <input class="message-input" autocomplete="off" />
             </div>
         </li>
-        <li class="page scores">
+        <li class="page score">
 
         </li>
     <script src="/socket.io/socket.io.js"></script>
@@ -47,7 +51,8 @@
         var socket = io();
     </script>
     <script src="pages.js"></script>
-    <script src="play.js"></script>
+    <script src="login.js"></script>
+    <script src="game.js"></script>
     <script src="canvas.js"></script>
     <script src="chat.js"></script>
 </body>
