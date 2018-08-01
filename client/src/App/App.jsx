@@ -1,19 +1,49 @@
 import React from 'react';
-import openSocket from 'socket.io-client';
-import css from './App.scss';
+// import css from './App.scss';
+// import subscribeToTimer from '../socket';
+import Login from '../Login/Login';
+import Lobby from '../Lobby/Lobby';
+import Game from '../Game/Game';
+import Score from '../Score/Score';
 
-export default class App extends React.Component {
-    componentDidMount() {
-        const socket = openSocket('http://localhost:8081');
-        socket.emit('hola');
-        socket.on('cacona', () => {console.log('cacona')});
-    }
+const pages = {
+    LOGIN: 'login',
+    LOBBY: 'lobby',
+    GAME: 'game',
+    SCORE: 'score',
+};
+
+class App extends React.Component {
+    state = {
+        currentPage: pages.LOGIN,
+    };
+
+    // componentDidMount() {
+    //     subscribeToTimer(page => this.setState({
+    //         page,
+    //     }));
+    // }
+
+    changePage = (selectedPage) => {
+        this.setState({
+            currentPage: selectedPage,
+        });
+    };
 
     render() {
+        const { currentPage } = this.state;
+        const pagesJsx = {
+            [pages.LOGIN]: Login,
+            [pages.LOBBY]: Lobby,
+            [pages.GAME]: Game,
+            [pages.SCORE]: Score,
+        };
+        const Child = pagesJsx[currentPage];
+
         return (
-            <p className={css.p}>
-                { 'This is my new react app' }
-            </p>
+            <Child changePage={this.changePage} />
         );
     }
 }
+
+export default App;

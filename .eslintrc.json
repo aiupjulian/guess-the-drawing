@@ -6,6 +6,7 @@
         "browser": true,
         "node": true
     },
+    "parser": "babel-eslint",
     "rules": {
         "linebreak-style": 0,
         "indent": ["error", 4],

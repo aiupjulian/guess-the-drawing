@@ -16,23 +16,22 @@ const usersEmit = () => {
 };
 
 io.on('connection', (socket) => {
-    let addedUser = false;
-
+    // LOGIN
     socket.on('add user', (username) => {
-        if (addedUser) return;
-        addedUser = true;
         socket.username = username;
         socket.score = 0;
         usersEmit();
     });
 
+    // LOBBY
     socket.on('start game', (data) => {
         socket.broadcast.emit('start game', data);
         setTimeout(() => {
-            io.emit('start play', io.sockets)
+            io.emit('start play', io.sockets);
         }, 9000);
     });
 
+    // CANVAS
     socket.on('drawing', (data) => {
         socket.broadcast.emit('drawing', data);
     });
@@ -45,6 +44,7 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('undo canvas');
     });
 
+    // CHAT
     socket.on('message', (data) => {
         socket.broadcast.emit('message', {
             username: socket.username,
