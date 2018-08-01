@@ -4,16 +4,16 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const parentDirectory = __dirname;
 const clientDirectory = path.join(parentDirectory, 'client');
-const serverDirectory = path.join(parentDirectory, 'server');
 const clientOutputDirectory = path.join(clientDirectory, 'dist');
-const serverOutputDirectory = path.join(serverDirectory, 'dist');
 
 const mode = 'development';
 
-const clientConfig = {
+module.exports = {
     name: 'client',
+    target: 'web',
     entry: path.join(clientDirectory, 'index.jsx'),
     mode,
+    devtool: 'source-map',
     module: {
         rules: [
             {
@@ -55,31 +55,8 @@ const clientConfig = {
     resolve: {
         extensions: ['*', '.webpack.js', '.web.js', '.js', '.json', '.jsx'],
     },
-};
-
-const serverConfig = {
-    name: 'server',
-    target: 'node',
-    entry: path.join(serverDirectory, 'index.js'),
-    mode,
-    module: {
-        rules: [
-            {
-                test: /\.(js)$/,
-                include: [
-                    serverDirectory,
-                ],
-                loader: 'babel-loader',
-            },
-        ],
+    serve: {
+        content: clientOutputDirectory,
+        port: 8080,
     },
-    output: {
-        path: serverOutputDirectory,
-        filename: 'bundle.js',
-    },
-    plugins: [
-        new CleanWebpackPlugin([serverOutputDirectory]),
-    ],
 };
-
-module.exports = [serverConfig, clientConfig];

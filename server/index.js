@@ -1,26 +1,23 @@
-const port = 3000;
-let express = require('express');
-let app = express();
-let http = require('http').Server(app);
-let io = require('socket.io')(http);
+const express = require('express');
 
-app.use(express.static("client/dist"));
+const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
-app.get('/', (req, res) => {
-    res.sendFile('index.html');
-});
+const port = 8081;
 
 const usersEmit = () => {
     io.emit(
         'users',
         Object.values(io.sockets.connected)
-            .filter((socket) => socket.username)
-            .map(({ username, score }) => ({ username, score }))
+            .filter(socket => socket.username)
+            .map(({ username, score }) => ({ username, score })),
     );
 };
 
 io.on('connection', (socket) => {
     let addedUser = false;
+
     socket.on('add user', (username) => {
         if (addedUser) return;
         addedUser = true;
@@ -51,13 +48,13 @@ io.on('connection', (socket) => {
     socket.on('message', (data) => {
         socket.broadcast.emit('message', {
             username: socket.username,
-            message: data
+            message: data,
         });
     });
 
     socket.on('disconnect', usersEmit);
 });
 
-http.listen(3000, () => {
-    console.log('listening on *:3000');
+http.listen(port, () => {
+    console.log(`listening on *:${port}`);
 });
