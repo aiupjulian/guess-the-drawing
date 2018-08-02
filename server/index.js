@@ -26,9 +26,9 @@ io.on('connection', (socket) => {
     // LOBBY
     socket.on('start game', (data) => {
         socket.broadcast.emit('start game', data);
-        setTimeout(() => {
-            io.emit('start play', io.sockets);
-        }, 9000);
+        // setTimeout(() => {
+        //     io.emit('start play', io.sockets);
+        // }, 9000);
     });
 
     // CANVAS
@@ -45,10 +45,11 @@ io.on('connection', (socket) => {
     });
 
     // CHAT
-    socket.on('message', (data) => {
+    socket.on('message', (message) => {
+        const { username } = socket;
         socket.broadcast.emit('message', {
-            username: socket.username,
-            message: data,
+            username,
+            message,
         });
     });
 

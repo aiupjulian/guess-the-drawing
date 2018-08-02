@@ -7,7 +7,9 @@ import pages from '../../constants';
 class Lobby extends React.Component {
     componentDidMount() {
         const { changePage } = this.props;
-        subscribeToStartGame(() => changePage(pages.GAME));
+        subscribeToStartGame(() => {
+            changePage(pages.GAME);
+        });
     }
 
     handleStartGameClick = () => {

@@ -1,8 +1,9 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import Chat from './components/Chat';
 // import css from './App.scss';
 // import subscribeToTimer from '../socket';
-import pages from '../../constants';
+// import pages from '../../constants';
 
 class Game extends React.Component {
     constructor(props) {
@@ -16,16 +17,18 @@ class Game extends React.Component {
     //     subscribeToTimer(page => this.setState({
     //         page,
     //     }));
+    // const { changePage } = this.props;
+    //     changePage(pages.SCORE);
     // }
 
     render() {
-        const { changePage } = this.props;
-        changePage(pages.SCORE);
+        const { username } = this.props;
 
         return (
             <Fragment>
                 <div className="canvas">
-                    <canvas className="whiteboard" height="1" width="1">
+                    {'canvas'}
+                    {/* <canvas className="whiteboard" height="1" width="1">
                         Get a better browser, bro.
                     </canvas>
                     <div className="options">
@@ -36,11 +39,10 @@ class Game extends React.Component {
                         <div className="option color yellow"></div>
                         <div className="option undo">UNDO</div>
                         <div className="option clear">CLEAR</div>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="chat">
-                    <ul className="messages"></ul>
-                    <input className="message-input" autoComplete="off" />
+                    <Chat username={username} />
                 </div>
             </Fragment>
         );
@@ -49,6 +51,7 @@ class Game extends React.Component {
 
 Game.propTypes = {
     changePage: PropTypes.func.isRequired,
+    username: PropTypes.string.isRequired,
 };
 
 export default Game;

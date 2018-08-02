@@ -22,9 +22,9 @@ class App extends React.Component {
     };
 
     componentDidMount() {
-        subscribeToUsers(users => this.setState({
-            users,
-        }));
+        subscribeToUsers((users) => {
+            this.setState({ users });
+        });
     }
 
     setUsername = (username) => {

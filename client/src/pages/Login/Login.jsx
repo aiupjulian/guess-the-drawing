@@ -22,9 +22,11 @@ class Login extends React.Component {
     handleUsernameSubmit = () => {
         const { changePage, setUsername } = this.props;
         const { username } = this.state;
-        setUsername(username);
-        emitAddUsername(username);
-        changePage(pages.LOBBY);
+        if (username) {
+            setUsername(username);
+            emitAddUsername(username);
+            changePage(pages.LOBBY);
+        }
     };
 
     render() {
