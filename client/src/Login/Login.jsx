@@ -21,15 +21,12 @@ class Login extends React.Component {
         const { changePage } = this.props;
 
         return (
-            <p>
-                { 'login' }
-                <button
-                    type="button"
-                    onClick={() => changePage('lobby')}
-                >
-                    { 'Next Page' }
-                </button>
-            </p>
+            <div className="form">
+                <h3 className="title">
+                    Whats your nickname?
+                </h3>
+                <input className="username-input" type="text" maxLength="10" required />
+            </div>
         );
     }
 }

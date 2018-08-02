@@ -1,3 +1,0 @@
-socket.on('start play', () => {
-
-});

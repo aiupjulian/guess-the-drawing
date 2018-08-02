@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragments } from 'react';
 import PropTypes from 'prop-types';
 // import css from './App.scss';
 // import subscribeToTimer from '../socket';
@@ -21,15 +21,13 @@ class Lobby extends React.Component {
         const { changePage } = this.props;
 
         return (
-            <p>
-                { 'lobby' }
-                <button
-                    type="button"
-                    onClick={() => changePage('game')}
-                >
-                    { 'Next Page' }
+            <Fragments>
+                <ul className="users">
+                </ul>
+                <button type="button" className="start-game">
+                    Start game
                 </button>
-            </p>
+            </Fragments>
         );
     }
 }

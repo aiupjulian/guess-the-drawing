@@ -5,13 +5,14 @@
   "main": "./server/index.js",
   "scripts": {
     "client": "webpack-serve --config webpack.config.js",
-    "server": "nodemon --watch server",
-    "dev": "concurrently -n \"C,S\" -c \"bgBlue.bold,bgGreen.bold\" -k \"npm run client\" \"npm run server\"",
+    "server": "nodemon",
+    "dev": "concurrently -n \"C,S\" -c \"bgBlue.bold,bgGreen.bold\" -k \"npm:client\" \"npm:server\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "concurrently": "^3.6.1",
     "express": "^4.16.3",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
@@ -29,7 +30,7 @@
     "babel-preset-react": "^6.24.1",
     "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^1.0.0",
-    "eslint": "^4.19.1",
+    "eslint": "^5.2.0",
     "eslint-config-airbnb": "^17.0.0",
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
