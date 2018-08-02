@@ -41,24 +41,3 @@
 .option.green { background-color: green; }
 .option.blue { background-color: blue; }
 .option.yellow { background-color: yellow; }
-
-/**
-* Chat
-*/
-.chat {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
-    height: 30%;
-}
-
-.messages {
-    overflow-y: scroll;
-    height: auto;
-    margin: 0;
-}
-
-.message-input {
-    height: auto;
-}

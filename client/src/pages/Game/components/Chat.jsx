@@ -68,7 +68,6 @@ class Chat extends React.Component {
 }
 
 Chat.propTypes = {
-    changePage: PropTypes.func.isRequired,
     username: PropTypes.string.isRequired,
 };
 
