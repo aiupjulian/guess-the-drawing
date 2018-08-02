@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 // import css from './App.scss';
 // import subscribeToTimer from '../socket';
+import pages from '../../constants';
 
-class Login extends React.Component {
+class Score extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -19,20 +20,24 @@ class Login extends React.Component {
 
     render() {
         const { changePage } = this.props;
+        changePage(pages.GAME);
 
         return (
-            <div className="form">
-                <h3 className="title">
-                    Whats your nickname?
-                </h3>
-                <input className="username-input" type="text" maxLength="10" required />
-            </div>
+            <p>
+                { 'score' }
+                <button
+                    type="button"
+                    onClick={() => changePage('game')}
+                >
+                    { 'Next Page' }
+                </button>
+            </p>
         );
     }
 }
 
-Login.propTypes = {
+Score.propTypes = {
     changePage: PropTypes.func.isRequired,
 };
 
-export default Login;
+export default Score;

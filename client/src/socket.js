@@ -2,10 +2,25 @@ import openSocket from 'socket.io-client';
 
 const socket = openSocket('http://localhost:8081');
 
-function subscribeToPageChange(callback) {
-    socket.on('page change', data => callback(null, data));
-}
+const subscribeToUsers = (callback) => {
+    socket.on('users', users => callback(users));
+};
 
-export default {
-    subscribeToPageChange,
+const emitAddUsername = (username) => {
+    socket.emit('add user', username);
+};
+
+const emitStartGame = () => {
+    socket.emit('start game');
+};
+
+const subscribeToStartGame = (callback) => {
+    socket.on('start game', () => callback());
+};
+
+export {
+    emitAddUsername,
+    emitStartGame,
+    subscribeToStartGame,
+    subscribeToUsers,
 };

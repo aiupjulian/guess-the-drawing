@@ -1,7 +1,8 @@
-import React, { Fragments } from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 // import css from './App.scss';
 // import subscribeToTimer from '../socket';
+import pages from '../../constants';
 
 class Game extends React.Component {
     constructor(props) {
@@ -19,9 +20,10 @@ class Game extends React.Component {
 
     render() {
         const { changePage } = this.props;
+        changePage(pages.SCORE);
 
         return (
-            <Fragments>
+            <Fragment>
                 <div className="canvas">
                     <canvas className="whiteboard" height="1" width="1">
                         Get a better browser, bro.
@@ -40,7 +42,7 @@ class Game extends React.Component {
                     <ul className="messages"></ul>
                     <input className="message-input" autoComplete="off" />
                 </div>
-            </Fragments>
+            </Fragment>
         );
     }
 }
