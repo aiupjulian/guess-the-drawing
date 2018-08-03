@@ -1,34 +1,33 @@
 import React, { Fragment } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import Canvas from './Canvas';
 import Colors from './Colors';
-// import css from './Canvas.scss';
+import css from './Whiteboard.scss';
 // import { subscribeToTimer } from '../../../socket';
 
 class Whiteboard extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            // currentPage: pages.LOGIN,
-        };
-    }
+    state = {
+        color: 'black',
+    };
 
-    // componentDidMount() {
-    //     subscribeToTimer(page => this.setState({
-    //         page,
-    //     }));
-    // const { changePage } = this.props;
-    //     changePage(pages.SCORE);
-    // }
+    handleChangeColor = (color) => {
+        this.setState({ color });
+    };
 
     render() {
+        const { color } = this.state;
+        const { offsetHeight, offsetWidth } = this.props;
         return (
             <Fragment>
-                <div className="canvas">
-                    <Canvas />
+                <div className={css.canvas}>
+                    <Canvas
+                        color={color}
+                        offsetHeight={offsetHeight}
+                        offsetWidth={offsetWidth}
+                    />
                 </div>
-                <div className="options">
-                    <Colors />
+                <div className={css.options}>
+                    <Colors onChangeColor={this.handleChangeColor} />
                 </div>
             </Fragment>
         );
@@ -36,8 +35,8 @@ class Whiteboard extends React.Component {
 }
 
 Whiteboard.propTypes = {
-    // changePage: PropTypes.func.isRequired,
-    // username: PropTypes.string.isRequired,
+    offsetHeight: PropTypes.number.isRequired,
+    offsetWidth: PropTypes.number.isRequired,
 };
 
 export default Whiteboard;

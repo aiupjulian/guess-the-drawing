@@ -42,7 +42,7 @@ class Chat extends React.Component {
 
         return (
             <Fragment>
-                <ul className="messages">
+                <ul className={css.messages}>
                     {messages.map(message => (
                         <li>
                             <span className={this.getUsernameColor(message.username)}>
@@ -55,7 +55,7 @@ class Chat extends React.Component {
                 <input
                     type="text"
                     maxLength="20"
-                    className="message-input"
+                    className={css.messageInput}
                     autoComplete="off"
                     required
                     value={messageInput}

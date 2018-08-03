@@ -1,5 +1,5 @@
 import React from 'react';
-// import css from './App.scss';
+import css from './App.scss';
 import { subscribeToUsers } from '../../socket';
 import Login from '../Login/Login';
 import Lobby from '../Lobby/Lobby';
@@ -42,12 +42,14 @@ class App extends React.Component {
         const Child = pagesJsx[currentPage];
 
         return (
-            <Child
-                changePage={this.changePage}
-                setUsername={this.setUsername}
-                username={username}
-                users={users}
-            />
+            <div className={css.page}>
+                <Child
+                    changePage={this.changePage}
+                    setUsername={this.setUsername}
+                    username={username}
+                    users={users}
+                />
+            </div>
         );
     }
 }

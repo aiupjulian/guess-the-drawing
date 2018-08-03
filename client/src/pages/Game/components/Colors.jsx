@@ -1,44 +1,29 @@
 import React, { Fragment } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import css from './Colors.scss';
 // import { subscribeToTimer } from '../../../socket';
 import Color from './Color';
 
 class Colors extends React.Component {
-    state = {
-        color: 'black'
-    };
-
-    // componentDidMount() {
-    //     subscribeToTimer(page => this.setState({
-    //         page,
-    //     }));
-    // const { changePage } = this.props;
-    //     changePage(pages.SCORE);
-    // }
-
-    handleChangeColorClick = (color) => {
-        this.setState({ color });
-    };
-
     render() {
+        const { onChangeColor } = this.props;
         return (
             <Fragment>
-                <Color color="black" onChangeColor={this.handleChangeColorClick} />
-                <Color color="red" onChangeColor={this.handleChangeColorClick} />
-                <Color color="green" onChangeColor={this.handleChangeColorClick} />
-                <Color color="blue" onChangeColor={this.handleChangeColorClick} />
-                <Color color="yellow" onChangeColor={this.handleChangeColorClick} />
+                <Color color="black" onChangeColor={onChangeColor} className={`${css.option} ${css.black}`} />
+                <Color color="red" onChangeColor={onChangeColor} className={`${css.option} ${css.red}`} />
+                <Color color="green" onChangeColor={onChangeColor} className={`${css.option} ${css.green}`} />
+                <Color color="blue" onChangeColor={onChangeColor} className={`${css.option} ${css.blue}`} />
+                <Color color="yellow" onChangeColor={onChangeColor} className={`${css.option} ${css.yellow}`} />
                 <button
                     type="button"
-                    className="option undo"
+                    className={css.option}
                     onClick={this.handleColorClick}
                 >
                     {'UNDO'}
                 </button>
                 <button
                     type="button"
-                    className="option clear"
+                    className={css.option}
                     onClick={this.handleColorClick}
                 >
                     {'CLEAR'}
@@ -49,8 +34,7 @@ class Colors extends React.Component {
 }
 
 Colors.propTypes = {
-    // changePage: PropTypes.func.isRequired,
-    // username: PropTypes.string.isRequired,
+    onChangeColor: PropTypes.func.isRequired,
 };
 
 export default Colors;

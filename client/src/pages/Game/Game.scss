@@ -1,0 +1,21 @@
+// STATUS BAR
+.statusBar {
+    width: 100%;
+    height: 5%;
+}
+
+// WHITEBOARD
+.whiteboard {
+    position: relative;
+    width: 100%;
+    height: 65%;
+}
+
+// CHAT
+.chat {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height: 30%;
+}

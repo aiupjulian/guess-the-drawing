@@ -2,6 +2,7 @@ import openSocket from 'socket.io-client';
 
 const socket = openSocket('http://localhost:8081');
 
+// EMIT
 const emit = (event, data) => {
     socket.emit(event, data);
 };
@@ -14,6 +15,14 @@ const emitCanvas = (data) => {
     emit('canvas', data);
 };
 
+const emitClearCanvas = () => {
+    emit('clear canvas');
+};
+
+const emitDrawing = (data) => {
+    emit('drawing', data);
+};
+
 const emitMessage = (message) => {
     emit('message', message);
 };
@@ -22,12 +31,25 @@ const emitStartGame = () => {
     emit('start game');
 };
 
+const emitUndoCanvas = () => {
+    emit('undo canvas');
+};
+
+// SUBSCRIBE
 const subscribe = (event, callback) => {
     socket.on(event, data => callback(data));
 };
 
 const subscribeToCanvas = (callback) => {
     subscribe('canvas', callback);
+};
+
+const subscribeToClearCanvas = (callback) => {
+    subscribe('clear canvas', callback);
+};
+
+const subscribeToDrawing = (callback) => {
+    subscribe('drawing', callback);
 };
 
 const subscribeToMessage = (callback) => {
@@ -38,6 +60,10 @@ const subscribeToStartGame = (callback) => {
     subscribe('start game', callback);
 };
 
+const subscribeToUndoCanvas = (callback) => {
+    subscribe('undo canvas', callback);
+};
+
 const subscribeToUsers = (callback) => {
     subscribe('users', callback);
 };
@@ -45,10 +71,16 @@ const subscribeToUsers = (callback) => {
 export {
     emitAddUser,
     emitCanvas,
+    emitClearCanvas,
+    emitDrawing,
     emitMessage,
     emitStartGame,
+    emitUndoCanvas,
     subscribeToCanvas,
+    subscribeToClearCanvas,
+    subscribeToDrawing,
     subscribeToMessage,
     subscribeToStartGame,
+    subscribeToUndoCanvas,
     subscribeToUsers,
 };
