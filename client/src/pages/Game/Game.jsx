@@ -25,7 +25,7 @@ class Game extends React.Component {
             <Fragment>
                 {'barra superior: palabra a dibujar / tiempo / quien dibuja'}
                 <div className="canvas">
-                    <Whiteboard />
+                    <Whiteboard username={username} />
                 </div>
                 <div className="chat">
                     <Chat username={username} />

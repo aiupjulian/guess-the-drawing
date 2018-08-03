@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
     socket.on('drawing', (data) => {
         socket.broadcast.emit('drawing', data);
     });
-
+    
     socket.on('clear canvas', () => {
         socket.broadcast.emit('clear canvas');
     });

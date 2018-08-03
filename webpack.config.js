@@ -50,6 +50,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.join(clientDirectory, 'index.html'),
             favicon: path.join(clientDirectory, 'favicon.ico'),
+            meta: { viewport: 'width=device-width, initial-scale=1' },
         }),
     ],
     resolve: {

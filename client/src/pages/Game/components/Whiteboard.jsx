@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
+// import PropTypes from 'prop-types';
 import Canvas from './Canvas';
 import Colors from './Colors';
-// import PropTypes from 'prop-types';
 // import css from './Canvas.scss';
 // import { subscribeToTimer } from '../../../socket';
 

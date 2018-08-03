@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 // import css from './App.scss';
-import { emitAddUsername } from '../../socket';
+import { emitAddUser } from '../../socket';
 import pages from '../../constants';
 
 class Login extends React.Component {
@@ -24,7 +24,7 @@ class Login extends React.Component {
         const { username } = this.state;
         if (username) {
             setUsername(username);
-            emitAddUsername(username);
+            emitAddUser(username);
             changePage(pages.LOBBY);
         }
     };
