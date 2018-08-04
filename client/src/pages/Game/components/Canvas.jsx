@@ -77,6 +77,7 @@ class Canvas extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
+        this.context = this.canvas.current.getContext('2d');
         const { offsetHeight, offsetWidth } = this.props;
         if (offsetHeight !== prevProps.offsetHeight || offsetWidth !== prevProps.offsetWidth) {
             this.onResize();
@@ -145,20 +146,13 @@ class Canvas extends React.Component {
     };
 
     drawLine = (x0, y0, x1, y1, color, drawnLineId, isUndoAction, emit) => {
-        const {
-            beginPath,
-            moveTo,
-            lineTo,
-            stroke,
-            closePath,
-        } = this.context;
-        beginPath();
-        moveTo(x0, y0);
-        lineTo(x1, y1);
+        this.context.beginPath();
+        this.context.moveTo(x0, y0);
+        this.context.lineTo(x1, y1);
         this.context.strokeStyle = color;
         this.context.lineWidth = 2;
-        stroke();
-        closePath();
+        this.context.stroke();
+        this.context.closePath();
 
         if (!isUndoAction) {
             this.saveDrawnLine([x0, y0, x1, y1, color, drawnLineId]);
@@ -205,6 +199,7 @@ class Canvas extends React.Component {
     // document.getElementsByClassName('clear')[0].addEventListener('click', () => { clearCanvas(true) }, false); //IMPORTANT
     // document.getElementsByClassName('undo')[0].addEventListener('click', () => { undoCanvas(true) }, false); //IMPORTANT
     render() {
+        console.log(this.context);
         return (
             <canvas
                 height="1"
