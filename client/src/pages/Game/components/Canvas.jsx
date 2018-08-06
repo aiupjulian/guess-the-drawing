@@ -121,28 +121,16 @@ class Canvas extends React.Component {
 
     onTouchStart = (event) => {
         const touch = event.touches[0];
-        const mouseEvent = new MouseEvent('mousedown', {
-            clientX: touch.clientX,
-            clientY: touch.clientY,
-        });
-        this.canvas.current.dispatchEvent(mouseEvent);
+        this.onMouseDown({ clientX: touch.clientX, clientY: touch.clientY });
     };
 
     onTouchEnd = () => {
-        const mouseEvent = new MouseEvent('mouseup', {});
-        this.canvas.current.dispatchEvent(mouseEvent);
+        this.onMouseUp();
     };
 
     onTouchMove = (event) => {
         const touch = event.touches[0];
-        const mouseEvent = new MouseEvent(
-            'mousemove',
-            {
-                clientX: touch.clientX,
-                clientY: touch.clientY,
-            },
-        );
-        this.canvas.current.dispatchEvent(mouseEvent);
+        this.onMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
     };
 
     drawLine = (x0, y0, x1, y1, color, drawnLineId, isUndoAction, emit) => {
@@ -199,7 +187,6 @@ class Canvas extends React.Component {
     // document.getElementsByClassName('clear')[0].addEventListener('click', () => { clearCanvas(true) }, false); //IMPORTANT
     // document.getElementsByClassName('undo')[0].addEventListener('click', () => { undoCanvas(true) }, false); //IMPORTANT
     render() {
-        console.log(this.context);
         return (
             <canvas
                 height="1"

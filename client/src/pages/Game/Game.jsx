@@ -34,9 +34,9 @@ class Game extends React.Component {
 
         return (
             <Fragment>
-                <div className={css.statusBar}>
+                {/* <div className={css.statusBar}>
                     {'barra superior: palabra a dibujar / tiempo / quien dibuja'}
-                </div>
+                </div> */}
                 <div className={css.whiteboard} ref={this.whiteboard}>
                     <Whiteboard
                         username={username}
