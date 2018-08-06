@@ -1,10 +1,20 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import css from './Colors.scss';
+import css from './Options.scss';
 // import { subscribeToTimer } from '../../../socket';
 import Color from './Color';
 
-class Colors extends React.Component {
+class Options extends React.Component {
+    handleClearCanvas = () => {
+        const { onClearCanvas } = this.props;
+        onClearCanvas(true);
+    }
+
+    handleUndoCanvas = () => {
+        const { onUndoCanvas } = this.props;
+        onUndoCanvas(true);
+    }
+
     render() {
         const { onChangeColor } = this.props;
         return (
@@ -17,14 +27,14 @@ class Colors extends React.Component {
                 <button
                     type="button"
                     className={css.option}
-                    onClick={this.handleColorClick}
+                    onClick={this.handleUndoCanvas}
                 >
                     {'UNDO'}
                 </button>
                 <button
                     type="button"
                     className={css.option}
-                    onClick={this.handleColorClick}
+                    onClick={this.handleClearCanvas}
                 >
                     {'CLEAR'}
                 </button>
@@ -33,8 +43,10 @@ class Colors extends React.Component {
     }
 }
 
-Colors.propTypes = {
+Options.propTypes = {
     onChangeColor: PropTypes.func.isRequired,
+    onClearCanvas: PropTypes.func.isRequired,
+    onUndoCanvas: PropTypes.func.isRequired,
 };
 
-export default Colors;
+export default Options;

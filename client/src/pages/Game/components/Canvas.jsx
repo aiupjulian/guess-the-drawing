@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import css from './Canvas.scss';
-import Colors from './Colors';
+import Options from './Options';
 import {
     emitClearCanvas,
     emitDrawing,
@@ -76,8 +76,8 @@ class Canvas extends React.Component {
                 data.drawnLineId,
             );
         });
-        subscribeToClearCanvas(() => { this.clearCanvas(); });
-        subscribeToUndoCanvas(() => { this.undoCanvas(); });
+        subscribeToClearCanvas(() => { this.handleClearCanvas(); });
+        subscribeToUndoCanvas(() => { this.handleUndoCanvas(); });
         this.onResize();
     }
 
@@ -165,14 +165,14 @@ class Canvas extends React.Component {
         });
     };
 
-    clearCanvas = (emit) => {
+    handleClearCanvas = (emit) => {
         this.canvas.current.width = this.canvas.current.width;
         this.drawnLinesArray = [];
         if (!emit) { return; }
         emitClearCanvas();
     };
 
-    undoCanvas = (emit) => {
+    handleUndoCanvas = (emit) => {
         this.canvas.current.width = this.canvas.current.width;
         this.drawnLinesArray = this.drawnLinesArray.filter(
             drawnLine => drawnLine[5] !== this.drawnLineId,
@@ -193,8 +193,6 @@ class Canvas extends React.Component {
         this.setState({ color });
     };
 
-    // document.getElementsByClassName('clear')[0].addEventListener('click', () => { clearCanvas(true) }, false); //IMPORTANT
-    // document.getElementsByClassName('undo')[0].addEventListener('click', () => { undoCanvas(true) }, false); //IMPORTANT
     render() {
         return (
             <Fragment>
@@ -215,7 +213,11 @@ class Canvas extends React.Component {
                     </canvas>
                 </div>
                 <div className={css.options}>
-                    <Colors onChangeColor={this.handleChangeColor} />
+                    <Options
+                        onChangeColor={this.handleChangeColor}
+                        onClearCanvas={this.handleClearCanvas}
+                        onUndoCanvas={this.handleUndoCanvas}
+                    />
                 </div>
             </Fragment>
         );
