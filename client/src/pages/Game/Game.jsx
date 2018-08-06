@@ -1,14 +1,14 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Chat from './components/Chat';
-import Whiteboard from './components/Whiteboard';
+import Canvas from './components/Canvas';
 import css from './Game.scss';
 // import subscribeToTimer from '../socket';
 
 class Game extends React.Component {
     constructor(props) {
         super(props);
-        this.whiteboard = React.createRef();
+        this.canvas = React.createRef();
     }
 
     state = {
@@ -23,8 +23,8 @@ class Game extends React.Component {
 
     onResize = () => {
         this.setState({
-            offsetHeight: this.whiteboard.current.offsetHeight,
-            offsetWidth: this.whiteboard.current.offsetWidth,
+            offsetHeight: this.canvas.current.offsetHeight,
+            offsetWidth: this.canvas.current.offsetWidth,
         });
     };
 
@@ -37,9 +37,8 @@ class Game extends React.Component {
                 {/* <div className={css.statusBar}>
                     {'barra superior: palabra a dibujar / tiempo / quien dibuja'}
                 </div> */}
-                <div className={css.whiteboard} ref={this.whiteboard}>
-                    <Whiteboard
-                        username={username}
+                <div className={css.canvas} ref={this.canvas}>
+                    <Canvas
                         offsetHeight={offsetHeight}
                         offsetWidth={offsetWidth}
                     />

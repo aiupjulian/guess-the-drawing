@@ -6,6 +6,10 @@
         "browser": true,
         "node": true
     },
+    "globals": {
+        "SERVER_HOST": true,
+        "SERVER_PORT": true
+    },
     "parser": "babel-eslint",
     "rules": {
         "linebreak-style": 0,

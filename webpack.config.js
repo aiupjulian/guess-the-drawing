@@ -1,6 +1,8 @@
 const path = require('path');
+const { DefinePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+require('dotenv').config();
 
 const parentDirectory = __dirname;
 const clientDirectory = path.join(parentDirectory, 'client');
@@ -52,13 +54,19 @@ module.exports = {
             favicon: path.join(clientDirectory, 'favicon.ico'),
             meta: { viewport: 'width=device-width, initial-scale=1' },
         }),
+        // SERVER CONFIG
+        new DefinePlugin({
+            SERVER_HOST: JSON.stringify(process.env.SERVER_HOST),
+            SERVER_PORT: JSON.stringify(process.env.SERVER_PORT),
+        }),
     ],
     resolve: {
         extensions: ['*', '.webpack.js', '.web.js', '.js', '.json', '.jsx'],
     },
+    // CLIENT CONFIG
     serve: {
         content: clientOutputDirectory,
-        host: '0.0.0.0',
-        port: 8080,
+        host: process.env.CLIENT_HOST,
+        port: process.env.CLIENT_PORT,
     },
 };

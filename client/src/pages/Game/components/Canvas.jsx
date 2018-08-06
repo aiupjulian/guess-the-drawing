@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-// import css from './Canvas.scss';
+import css from './Canvas.scss';
+import Colors from './Colors';
 import {
     emitClearCanvas,
     emitDrawing,
@@ -15,6 +16,10 @@ class Canvas extends React.Component {
         super(props);
         this.canvas = React.createRef();
     }
+
+    state = {
+        color: 'black',
+    };
 
     componentDidMount() {
         this.context = this.canvas.current.getContext('2d');
@@ -103,7 +108,7 @@ class Canvas extends React.Component {
     };
 
     onMouseMove = (event) => {
-        const { color } = this.props;
+        const { color } = this.state;
         if (!this.drawing) { return; }
         this.drawLine(
             this.current.x,
@@ -184,30 +189,40 @@ class Canvas extends React.Component {
         this.drawnLinesArray.push(drawnLine);
     };
 
+    handleChangeColor = (color) => {
+        this.setState({ color });
+    };
+
     // document.getElementsByClassName('clear')[0].addEventListener('click', () => { clearCanvas(true) }, false); //IMPORTANT
     // document.getElementsByClassName('undo')[0].addEventListener('click', () => { undoCanvas(true) }, false); //IMPORTANT
     render() {
         return (
-            <canvas
-                height="1"
-                width="1"
-                ref={this.canvas}
-                onMouseDown={this.onMouseDown}
-                onMouseUp={this.onMouseUp}
-                onMouseOut={this.onMouseUp}
-                onMouseMove={this.onMouseMove}
-                onTouchStart={this.onTouchStart}
-                onTouchEnd={this.onTouchEnd}
-                onTouchMove={this.onTouchMove}
-            >
-                {'Get a better browser, bro.'}
-            </canvas>
+            <Fragment>
+                <div className={css.canvas}>
+                    <canvas
+                        height="1"
+                        width="1"
+                        ref={this.canvas}
+                        onMouseDown={this.onMouseDown}
+                        onMouseUp={this.onMouseUp}
+                        onMouseOut={this.onMouseUp}
+                        onMouseMove={this.onMouseMove}
+                        onTouchStart={this.onTouchStart}
+                        onTouchEnd={this.onTouchEnd}
+                        onTouchMove={this.onTouchMove}
+                    >
+                        {'Get a better browser, bro.'}
+                    </canvas>
+                </div>
+                <div className={css.options}>
+                    <Colors onChangeColor={this.handleChangeColor} />
+                </div>
+            </Fragment>
         );
     }
 }
 
 Canvas.propTypes = {
-    color: PropTypes.string.isRequired,
     offsetHeight: PropTypes.number.isRequired,
     offsetWidth: PropTypes.number.isRequired,
 };

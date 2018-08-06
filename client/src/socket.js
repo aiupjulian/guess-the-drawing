@@ -1,7 +1,6 @@
 import openSocket from 'socket.io-client';
 
-// FIXME: CONFIGURE HOST IN ENV
-const socket = openSocket('http://192.168.0.50:8081');
+const socket = openSocket(`http://${SERVER_HOST}:${SERVER_PORT}`);
 
 // EMIT
 const emit = (event, data) => {

@@ -3,8 +3,7 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-
-const port = 8081;
+require('dotenv').config();
 
 const usersEmit = () => {
     io.emit(
@@ -56,6 +55,10 @@ io.on('connection', (socket) => {
     socket.on('disconnect', usersEmit);
 });
 
-http.listen(port, () => {
-    console.log(`listening on *:${port}`);
+const {
+    SERVER_PORT,
+} = process.env;
+
+http.listen(SERVER_PORT, () => {
+    console.log(`listening on *:${SERVER_PORT}`);
 });
