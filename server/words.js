@@ -1,4 +1,4 @@
-const words = [
+module.exports = [
     'aircraft carrier',
     'airplane',
     'alarm clock',

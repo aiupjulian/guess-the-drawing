@@ -4,12 +4,13 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 require('dotenv').config();
+const { getRounds } = require('./play');
 
 const usersEmit = () => {
     io.emit(
         'users',
         Object.values(io.sockets.connected)
-            .filter(socket => socket.username)
+            .filter(connectedSocket => connectedSocket.username)
             .map(({ username, score }) => ({ username, score })),
     );
 };
@@ -23,11 +24,37 @@ io.on('connection', (socket) => {
     });
 
     // LOBBY
-    socket.on('start game', (data) => {
-        socket.broadcast.emit('start game', data);
-        // setTimeout(() => {
-        //     io.emit('start play', io.sockets);
-        // }, 9000);
+    socket.on('start game', () => {
+        socket.broadcast.emit('start game');
+
+        const roundQuantity = 3;
+        const connectedUsers = Object.values(io.sockets.connected)
+            .filter(connectedSocket => connectedSocket.username)
+            .map(({ username }) => username);
+        const playIntervalSeconds = 2;
+        const secondsToMiliseconds = seconds => seconds * 1000;
+        const rounds = getRounds(roundQuantity, connectedUsers);
+        console.log(rounds);
+        
+        let round;
+
+        const playsEmitter = () => {
+            setTimeout(() => {
+                const currentPlay = round.pop();
+                io.emit('play', currentPlay);
+                if (round.length) {
+                    playsEmitter();
+                } else if (rounds.length) {
+                    roundEmmitter();
+                }
+            }, secondsToMiliseconds(playIntervalSeconds));
+        };
+        const roundEmmitter = () => {
+            round = rounds.pop();
+            io.emit('round');
+            playsEmitter();
+        };
+        roundEmmitter();
     });
 
     // CANVAS
