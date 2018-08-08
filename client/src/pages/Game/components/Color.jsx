@@ -20,7 +20,7 @@ class Color extends React.Component {
             </button>
         );
     }
-};
+}
 
 Color.propTypes = {
     onChangeColor: PropTypes.func.isRequired,

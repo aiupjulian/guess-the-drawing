@@ -27,6 +27,8 @@ class Canvas extends React.Component {
         this.drawing = false;
         this.drawnLineId = 0;
         this.drawnLinesArray = [];
+        this.canvasHorizontalDistanceToWindows = 0;
+        this.canvasVerticalDistanceToWindows = 0;
         this.blockCanvasScroll = false;
         document.body.addEventListener(
             'touchstart',
@@ -93,12 +95,14 @@ class Canvas extends React.Component {
         const { offsetHeight, offsetWidth } = this.props;
         this.canvas.current.width = offsetWidth;
         this.canvas.current.height = offsetHeight;
+        this.canvasHorizontalDistanceToWindows = this.canvas.current.getBoundingClientRect().x;
+        this.canvasVerticalDistanceToWindows = this.canvas.current.getBoundingClientRect().y;
     };
 
     onMouseDown = (event) => {
         this.drawing = true;
-        this.current.x = event.clientX;
-        this.current.y = event.clientY;
+        this.current.x = this.getMouseHorizontalPositionInCanvas(event.clientX);
+        this.current.y = this.getMouseVerticalPositionInCanvas(event.clientY);
         this.drawnLineId += 1;
     };
 
@@ -113,15 +117,15 @@ class Canvas extends React.Component {
         this.drawLine(
             this.current.x,
             this.current.y,
-            event.clientX,
-            event.clientY,
+            this.getMouseHorizontalPositionInCanvas(event.clientX),
+            this.getMouseVerticalPositionInCanvas(event.clientY),
             color,
             this.drawnLineId,
             false,
             true,
         );
-        this.current.x = event.clientX;
-        this.current.y = event.clientY;
+        this.current.x = this.getMouseHorizontalPositionInCanvas(event.clientX);
+        this.current.y = this.getMouseVerticalPositionInCanvas(event.clientY);
     };
 
     onTouchStart = (event) => {
@@ -138,7 +142,12 @@ class Canvas extends React.Component {
         this.onMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
     };
 
+    getMouseHorizontalPositionInCanvas = mouseX => mouseX - this.canvasHorizontalDistanceToWindows;
+
+    getMouseVerticalPositionInCanvas = mouseY => mouseY - this.canvasVerticalDistanceToWindows;
+
     drawLine = (x0, y0, x1, y1, color, drawnLineId, isUndoAction, emit) => {
+        /* eslint-disable */
         this.context.beginPath();
         this.context.moveTo(x0, y0);
         this.context.lineTo(x1, y1);
@@ -146,6 +155,7 @@ class Canvas extends React.Component {
         this.context.lineWidth = 2;
         this.context.stroke();
         this.context.closePath();
+        /* eslint-enable */
 
         if (!isUndoAction) {
             this.saveDrawnLine([x0, y0, x1, y1, color, drawnLineId]);
