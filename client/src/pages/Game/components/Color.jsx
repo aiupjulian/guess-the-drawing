@@ -8,23 +8,22 @@ class Color extends React.Component {
     };
 
     render() {
-        const { color } = this.props;
-        const classNames = `option color ${color}`;
+        const { className, color } = this.props;
         return (
             <button
+                className={className}
                 type="button"
-                className={classNames}
                 onClick={this.handleColorClick}
-            >
-                {color}
-            </button>
+                style={{ 'background-color': color }}
+            />
         );
     }
 }
 
 Color.propTypes = {
-    onChangeColor: PropTypes.func.isRequired,
+    className: PropTypes.string.isRequired,
     color: PropTypes.string.isRequired,
+    onChangeColor: PropTypes.func.isRequired,
 };
 
 export default Color;

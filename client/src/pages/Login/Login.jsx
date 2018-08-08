@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 // import css from './App.scss';
 import { emitAddUser } from '../../socket';
-import pages from '../../constants';
+import { pages } from '../../constants';
 
 class Login extends React.Component {
     state = {

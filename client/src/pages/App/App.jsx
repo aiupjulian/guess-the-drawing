@@ -4,14 +4,12 @@ import { subscribeToUsers } from '../../socket';
 import Login from '../Login/Login';
 import Lobby from '../Lobby/Lobby';
 import Game from '../Game/Game';
-import Score from '../Score/Score';
-import pages from '../../constants';
+import { pages } from '../../constants';
 
 const pagesJsx = {
     [pages.LOGIN]: Login,
     [pages.LOBBY]: Lobby,
     [pages.GAME]: Game,
-    [pages.SCORE]: Score,
 };
 
 class App extends React.Component {

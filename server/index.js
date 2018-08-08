@@ -15,11 +15,13 @@ const usersEmit = () => {
     );
 };
 
+const sleep = miliseconds => new Promise(resolve => setTimeout(resolve, miliseconds));
+
 io.on('connection', (socket) => {
     // LOGIN
     socket.on('add user', (username) => {
-        socket.username = username;
-        socket.score = 0;
+        socket.username = username; // eslint-disable-line
+        socket.score = 0; // eslint-disable-line
         usersEmit();
     });
 
@@ -27,34 +29,39 @@ io.on('connection', (socket) => {
     socket.on('start game', () => {
         socket.broadcast.emit('start game');
 
-        const roundQuantity = 3;
+        // GAME
         const connectedUsers = Object.values(io.sockets.connected)
             .filter(connectedSocket => connectedSocket.username)
             .map(({ username }) => username);
-        const playIntervalSeconds = 2;
+        const roundQuantity = 3;
+        const playTimeInSeconds = 12;
+        const showScoreTimeInSeconds = 5;
         const secondsToMiliseconds = seconds => seconds * 1000;
         const rounds = getRounds(roundQuantity, connectedUsers);
-        console.log(rounds);
-        
         let round;
+        let play;
 
-        const playsEmitter = () => {
-            setTimeout(() => {
-                const currentPlay = round.pop();
-                io.emit('play', currentPlay);
-                if (round.length) {
-                    playsEmitter();
-                } else if (rounds.length) {
-                    roundEmmitter();
-                }
-            }, secondsToMiliseconds(playIntervalSeconds));
-        };
-        const roundEmmitter = () => {
+        const emitRounds = async () => {
             round = rounds.pop();
             io.emit('round');
-            playsEmitter();
+            await sleep(secondsToMiliseconds(showScoreTimeInSeconds));
+            emitPlays(); // eslint-disable-line
         };
-        roundEmmitter();
+
+        const emitPlays = async () => {
+            play = round.pop();
+            io.emit('play', play);
+            await sleep(secondsToMiliseconds(playTimeInSeconds));
+            if (round.length) {
+                emitPlays();
+            } else if (rounds.length) {
+                emitRounds();
+            } else {
+                // io.emit('round');
+            }
+        };
+
+        emitRounds();
     });
 
     // CANVAS

@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 // import css from './App.scss';
 import { emitStartGame, subscribeToStartGame } from '../../socket';
-import pages from '../../constants';
+import { pages } from '../../constants';
 
 class Lobby extends React.Component {
     componentDidMount() {

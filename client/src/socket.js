@@ -3,70 +3,42 @@ import openSocket from 'socket.io-client';
 const socket = openSocket(`http://${SERVER_HOST}:${SERVER_PORT}`);
 
 // EMIT
-const emit = (event, data) => {
-    socket.emit(event, data);
-};
+const emit = event => data => socket.emit(event, data);
 
-const emitAddUser = (username) => {
-    emit('add user', username);
-};
+const emitAddUser = username => emit('add user')(username);
 
-const emitCanvas = (data) => {
-    emit('canvas', data);
-};
+const emitCanvas = data => emit('canvas')(data);
 
-const emitClearCanvas = () => {
-    emit('clear canvas');
-};
+const emitClearCanvas = () => emit('clear canvas')();
 
-const emitDrawing = (data) => {
-    emit('drawing', data);
-};
+const emitDrawing = data => emit('drawing')(data);
 
-const emitMessage = (message) => {
-    emit('message', message);
-};
+const emitMessage = message => emit('message')(message);
 
-const emitStartGame = () => {
-    emit('start game');
-};
+const emitStartGame = () => emit('start game')();
 
-const emitUndoCanvas = () => {
-    emit('undo canvas');
-};
+const emitUndoCanvas = () => emit('undo canvas')();
 
 // SUBSCRIBE
-const subscribe = (event, callback) => {
-    socket.on(event, data => callback(data));
-};
+const subscribe = event => callback => socket.on(event, data => callback(data));
 
-const subscribeToCanvas = (callback) => {
-    subscribe('canvas', callback);
-};
+const subscribeToCanvas = callback => subscribe('canvas')(callback);
 
-const subscribeToClearCanvas = (callback) => {
-    subscribe('clear canvas', callback);
-};
+const subscribeToClearCanvas = callback => subscribe('clear canvas')(callback);
 
-const subscribeToDrawing = (callback) => {
-    subscribe('drawing', callback);
-};
+const subscribeToDrawing = callback => subscribe('drawing')(callback);
 
-const subscribeToMessage = (callback) => {
-    subscribe('message', callback);
-};
+const subscribeToMessage = callback => subscribe('message')(callback);
 
-const subscribeToStartGame = (callback) => {
-    subscribe('start game', callback);
-};
+const subscribeToPlay = callback => subscribe('play')(callback);
 
-const subscribeToUndoCanvas = (callback) => {
-    subscribe('undo canvas', callback);
-};
+const subscribeToRound = callback => subscribe('round')(callback);
 
-const subscribeToUsers = (callback) => {
-    subscribe('users', callback);
-};
+const subscribeToStartGame = callback => subscribe('start game')(callback);
+
+const subscribeToUndoCanvas = callback => subscribe('undo canvas')(callback);
+
+const subscribeToUsers = callback => subscribe('users')(callback);
 
 export {
     emitAddUser,
@@ -80,6 +52,8 @@ export {
     subscribeToClearCanvas,
     subscribeToDrawing,
     subscribeToMessage,
+    subscribeToPlay,
+    subscribeToRound,
     subscribeToStartGame,
     subscribeToUndoCanvas,
     subscribeToUsers,

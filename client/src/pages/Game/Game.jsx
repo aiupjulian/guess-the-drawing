@@ -2,8 +2,9 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Chat from './components/Chat';
 import Canvas from './components/Canvas';
+import ScoreModal from './components/ScoreModal';
 import css from './Game.scss';
-// import subscribeToTimer from '../socket';
+import { subscribeToPlay, subscribeToRound } from '../../socket';
 
 class Game extends React.Component {
     constructor(props) {
@@ -14,11 +15,17 @@ class Game extends React.Component {
     state = {
         offsetHeight: 0,
         offsetWidth: 0,
+        play: {},
+        isScoreModalOpen: true,
     };
 
     componentDidMount() {
         window.addEventListener('resize', this.onResize, false);
         this.onResize();
+        subscribeToPlay((play) => { this.setState({ play, isScoreModalOpen: false }); });
+        subscribeToRound(() => {
+            this.setState({ play: {}, isScoreModalOpen: true });
+        });
     }
 
     onResize = () => {
@@ -30,15 +37,24 @@ class Game extends React.Component {
 
     render() {
         const { username } = this.props;
-        const { offsetHeight, offsetWidth } = this.state;
+        const {
+            isScoreModalOpen,
+            offsetHeight,
+            offsetWidth,
+            play,
+        } = this.state;
 
         return (
             <Fragment>
                 <div className={css.statusBar}>
-                    {'barra superior: palabra a dibujar / tiempo / quien dibuja'}
+                    {play.username} {play.words} {'tiempo'}
                 </div>
-                <div className={css.canvas} ref={this.canvas}>
+                <div
+                    className={css.canvas}
+                    ref={this.canvas}
+                >
                     <Canvas
+                        disabled={username !== play.username}
                         offsetHeight={offsetHeight}
                         offsetWidth={offsetWidth}
                     />
@@ -46,6 +62,7 @@ class Game extends React.Component {
                 <div className={css.chat}>
                     <Chat username={username} />
                 </div>
+                <ScoreModal isModalOpen={isScoreModalOpen} />
             </Fragment>
         );
     }

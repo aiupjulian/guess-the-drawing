@@ -1,6 +1,13 @@
-export default {
+export const pages = {
     LOGIN: 'login',
     LOBBY: 'lobby',
     GAME: 'game',
-    SCORE: 'score',
 };
+
+export const colors = [
+    'black',
+    'red',
+    'green',
+    'blue',
+    'yellow',
+];

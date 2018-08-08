@@ -204,6 +204,8 @@ class Canvas extends React.Component {
     };
 
     render() {
+        const { disabled } = this.props;
+
         return (
             <Fragment>
                 <div className={css.canvas}>
@@ -211,18 +213,18 @@ class Canvas extends React.Component {
                         height="1"
                         width="1"
                         ref={this.canvas}
-                        onMouseDown={this.onMouseDown}
-                        onMouseUp={this.onMouseUp}
-                        onMouseOut={this.onMouseUp}
-                        onMouseMove={this.onMouseMove}
-                        onTouchStart={this.onTouchStart}
-                        onTouchEnd={this.onTouchEnd}
-                        onTouchMove={this.onTouchMove}
+                        onMouseDown={disabled ? null : this.onMouseDown}
+                        onMouseUp={disabled ? null : this.onMouseUp}
+                        onMouseOut={disabled ? null : this.onMouseUp}
+                        onMouseMove={disabled ? null : this.onMouseMove}
+                        onTouchStart={disabled ? null : this.onTouchStart}
+                        onTouchEnd={disabled ? null : this.onTouchEnd}
+                        onTouchMove={disabled ? null : this.onTouchMove}
                     >
                         {'Get a better browser, bro.'}
                     </canvas>
                 </div>
-                <div className={css.options}>
+                <div className={`${css.options} ${disabled ? css.optionsDisabled : ''}`}>
                     <Options
                         onChangeColor={this.handleChangeColor}
                         onClearCanvas={this.handleClearCanvas}
@@ -235,6 +237,7 @@ class Canvas extends React.Component {
 }
 
 Canvas.propTypes = {
+    disabled: PropTypes.bool.isRequired,
     offsetHeight: PropTypes.number.isRequired,
     offsetWidth: PropTypes.number.isRequired,
 };
