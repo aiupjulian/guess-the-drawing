@@ -221,7 +221,7 @@ class Canvas extends React.Component {
                         onTouchEnd={disabled ? null : this.onTouchEnd}
                         onTouchMove={disabled ? null : this.onTouchMove}
                     >
-                        {'Get a better browser, bro.'}
+                        { 'Get a better browser, bro.' }
                     </canvas>
                 </div>
                 <div className={`${css.options} ${disabled ? css.optionsDisabled : ''}`}>

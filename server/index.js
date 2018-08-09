@@ -59,7 +59,7 @@ io.on('connection', (socket) => {
             } else if (rounds.length) {
                 emitRounds();
             } else {
-                io.emit('round');
+                // io.emit('round');
             }
         };
 

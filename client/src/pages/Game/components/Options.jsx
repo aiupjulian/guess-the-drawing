@@ -30,14 +30,14 @@ class Options extends React.Component {
                     className={`${css.option} `}
                     onClick={this.handleUndoCanvas}
                 >
-                    <FontAwesomeIcon icon={faUndo} />
+                    <FontAwesomeIcon icon={faUndo} size="lg" />
                 </button>
                 <button
                     type="button"
                     className={css.option}
                     onClick={this.handleClearCanvas}
                 >
-                    <FontAwesomeIcon icon={faTrashAlt} />
+                    <FontAwesomeIcon icon={faTrashAlt} size="lg" />
                 </button>
             </Fragment>
         );
