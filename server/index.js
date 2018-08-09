@@ -18,6 +18,8 @@ const usersEmit = () => {
 const sleep = miliseconds => new Promise(resolve => setTimeout(resolve, miliseconds));
 
 io.on('connection', (socket) => {
+    let play;
+
     // LOGIN
     socket.on('add user', (username) => {
         socket.username = username; // eslint-disable-line
@@ -39,7 +41,6 @@ io.on('connection', (socket) => {
         const secondsToMiliseconds = seconds => seconds * 1000;
         const rounds = getRounds(roundQuantity, connectedUsers);
         let round;
-        let play;
 
         const emitRounds = async () => {
             round = rounds.pop();
@@ -52,12 +53,13 @@ io.on('connection', (socket) => {
             play = round.pop();
             io.emit('play', play);
             await sleep(secondsToMiliseconds(playTimeInSeconds));
+            play = null;
             if (round.length) {
                 emitPlays();
             } else if (rounds.length) {
                 emitRounds();
             } else {
-                // io.emit('round');
+                io.emit('round');
             }
         };
 
@@ -80,10 +82,15 @@ io.on('connection', (socket) => {
     // CHAT
     socket.on('message', (message) => {
         const { username } = socket;
-        socket.broadcast.emit('message', {
-            username,
-            message,
-        });
+        if (play && message === play.word) {
+            socket.score += 10; // eslint-disable-line
+            usersEmit();
+        } else {
+            socket.broadcast.emit('message', {
+                username,
+                message,
+            });
+        }
     });
 
     socket.on('disconnect', usersEmit);

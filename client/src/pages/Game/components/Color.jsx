@@ -14,7 +14,7 @@ class Color extends React.Component {
                 className={className}
                 type="button"
                 onClick={this.handleColorClick}
-                style={{ 'background-color': color }}
+                style={{ backgroundColor: color }}
             />
         );
     }

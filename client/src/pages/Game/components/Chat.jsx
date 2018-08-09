@@ -69,6 +69,11 @@ class Chat extends React.Component {
 
 Chat.propTypes = {
     username: PropTypes.string.isRequired,
+    word: PropTypes.string,
+};
+
+Chat.defaultProps = {
+    word: '',
 };
 
 export default Chat;

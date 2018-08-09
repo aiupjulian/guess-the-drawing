@@ -36,7 +36,7 @@ class Game extends React.Component {
     };
 
     render() {
-        const { username } = this.props;
+        const { username, users } = this.props;
         const {
             isScoreModalOpen,
             offsetHeight,
@@ -60,9 +60,9 @@ class Game extends React.Component {
                     />
                 </div>
                 <div className={css.chat}>
-                    <Chat username={username} />
+                    <Chat username={username} word={play.words && play.words[0]} />
                 </div>
-                <ScoreModal isModalOpen={isScoreModalOpen} />
+                <ScoreModal isModalOpen={isScoreModalOpen} users={users} />
             </Fragment>
         );
     }
@@ -70,6 +70,12 @@ class Game extends React.Component {
 
 Game.propTypes = {
     username: PropTypes.string.isRequired,
+    users: PropTypes.arrayOf(
+        PropTypes.shape({
+            username: PropTypes.string,
+            score: PropTypes.number,
+        }),
+    ).isRequired,
 };
 
 export default Game;
