@@ -60,7 +60,7 @@ class Game extends React.Component {
                     />
                 </div>
                 <div className={css.chat}>
-                    <Chat username={username} word={play.words && play.words[0]} />
+                    <Chat username={username} />
                 </div>
                 <ScoreModal isModalOpen={isScoreModalOpen} users={users} />
             </Fragment>

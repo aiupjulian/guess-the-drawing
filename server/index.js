@@ -36,6 +36,7 @@ io.on('connection', (socket) => {
             .filter(connectedSocket => connectedSocket.username)
             .map(({ username }) => username);
         const roundQuantity = 3;
+        const showWordTimeInSeconds = 10;
         const playTimeInSeconds = 12;
         const showScoreTimeInSeconds = 5;
         const secondsToMiliseconds = seconds => seconds * 1000;
@@ -82,9 +83,11 @@ io.on('connection', (socket) => {
     // CHAT
     socket.on('message', (message) => {
         const { username } = socket;
-        if (play && message === play.word) {
-            socket.score += 10; // eslint-disable-line
-            usersEmit();
+        if (play && username !== play.username && message === play.words[0]) {
+            if (!play.usersThatScored.includes(username)) {
+                socket.score += 10; // eslint-disable-line
+                usersEmit();
+            }
         } else {
             socket.broadcast.emit('message', {
                 username,
