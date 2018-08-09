@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import css from './App.scss';
 import { emitAddUser } from '../../socket';
 import { pages } from '../../constants';
 
@@ -22,9 +21,10 @@ class Login extends React.Component {
     handleUsernameSubmit = () => {
         const { changePage, setUsername } = this.props;
         const { username } = this.state;
-        if (username) {
+        const room = window.location.search && window.location.search.slice(1);
+        if (username && room) {
             setUsername(username);
-            emitAddUser(username);
+            emitAddUser({ username, room });
             changePage(pages.LOBBY);
         }
     };

@@ -12,6 +12,7 @@ const getRounds = (roundsQuantity, users) => {
                 {
                     username: users[index],
                     words: getRandomWords(wordsQuantity),
+                    word: '',
                     usersThatScored: [],
                 }
             ),

@@ -5,7 +5,7 @@ const socket = openSocket(`http://${SERVER_HOST}:${SERVER_PORT}`);
 // EMIT
 const emit = event => data => socket.emit(event, data);
 
-const emitAddUser = username => emit('add user')(username);
+const emitAddUser = user => emit('add user')(user);
 
 const emitCanvas = data => emit('canvas')(data);
 
@@ -18,6 +18,8 @@ const emitMessage = message => emit('message')(message);
 const emitStartGame = () => emit('start game')();
 
 const emitUndoCanvas = () => emit('undo canvas')();
+
+const emitWordChosen = word => emit('word chosen')(word);
 
 // SUBSCRIBE
 const subscribe = event => callback => socket.on(event, data => callback(data));
@@ -40,6 +42,8 @@ const subscribeToUndoCanvas = callback => subscribe('undo canvas')(callback);
 
 const subscribeToUsers = callback => subscribe('users')(callback);
 
+const subscribeToWordChosen = callback => subscribe('word chosen')(callback);
+
 export {
     emitAddUser,
     emitCanvas,
@@ -48,6 +52,7 @@ export {
     emitMessage,
     emitStartGame,
     emitUndoCanvas,
+    emitWordChosen,
     subscribeToCanvas,
     subscribeToClearCanvas,
     subscribeToDrawing,
@@ -57,4 +62,5 @@ export {
     subscribeToStartGame,
     subscribeToUndoCanvas,
     subscribeToUsers,
+    subscribeToWordChosen,
 };

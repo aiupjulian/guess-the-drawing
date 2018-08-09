@@ -3,8 +3,14 @@ import PropTypes from 'prop-types';
 import Chat from './components/Chat';
 import Canvas from './components/Canvas';
 import ScoreModal from './components/ScoreModal';
+import ChooseWordModal from './components/ChooseWordModal';
 import css from './Game.scss';
-import { subscribeToPlay, subscribeToRound } from '../../socket';
+import {
+    emitWordChosen,
+    subscribeToPlay,
+    subscribeToRound,
+    subscribeToWordChosen,
+} from '../../socket';
 
 class Game extends React.Component {
     constructor(props) {
@@ -13,19 +19,26 @@ class Game extends React.Component {
     }
 
     state = {
+        isChooseWordModalOpen: false,
+        isScoreModalOpen: true,
         offsetHeight: 0,
         offsetWidth: 0,
         play: {},
-        isScoreModalOpen: true,
     };
 
     componentDidMount() {
+        const { username } = this.props;
         window.addEventListener('resize', this.onResize, false);
         this.onResize();
-        subscribeToPlay((play) => { this.setState({ play, isScoreModalOpen: false }); });
-        subscribeToRound(() => {
-            this.setState({ play: {}, isScoreModalOpen: true });
+        subscribeToPlay((play) => {
+            this.setState({
+                isChooseWordModalOpen: username === play.username,
+                isScoreModalOpen: false,
+                play,
+            });
         });
+        subscribeToRound(() => { this.setState({ play: {}, isScoreModalOpen: true }); });
+        subscribeToWordChosen((play) => { this.setState({ play }); });
     }
 
     onResize = () => {
@@ -35,9 +48,15 @@ class Game extends React.Component {
         });
     };
 
+    handleCloseChooseWordModal = (word) => {
+        this.setState({ isChooseWordModalOpen: false });
+        emitWordChosen(word);
+    };
+
     render() {
         const { username, users } = this.props;
         const {
+            isChooseWordModalOpen,
             isScoreModalOpen,
             offsetHeight,
             offsetWidth,
@@ -47,7 +66,7 @@ class Game extends React.Component {
         return (
             <Fragment>
                 <div className={css.statusBar}>
-                    {play.username} {play.words} {'tiempo'}
+                    {play.username} {play.word} {'||||'} {play.words} {'tiempo'}
                 </div>
                 <div
                     className={css.canvas}
@@ -63,6 +82,11 @@ class Game extends React.Component {
                     <Chat username={username} />
                 </div>
                 <ScoreModal isModalOpen={isScoreModalOpen} users={users} />
+                <ChooseWordModal
+                    isModalOpen={isChooseWordModalOpen}
+                    words={play.words}
+                    onCloseChooseWordModal={this.handleCloseChooseWordModal}
+                />
             </Fragment>
         );
     }

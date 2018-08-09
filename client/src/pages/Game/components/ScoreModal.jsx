@@ -1,25 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import css from './ScoreModal.scss';
+import Modal from './Modal';
 
-const orderByScore = (a, b) => a.score - b.score;
+const orderByScore = (a, b) => b.score - a.score;
 
-const Score = ({ isModalOpen, users }) => {
-    const showHideClassName = `${css.modal} ${isModalOpen ? css.displayBlock : css.displayNone}`;
-
-    return (
-        <div className={showHideClassName}>
-            <section className={css.modalMain}>
-                <h3>{ 'Scores:' }</h3>
-                <ul>
-                    {users.sort(orderByScore).map(user => (
-                        <li>{`${user.username} - ${user.score}`}</li>
-                    ))}
-                </ul>
-            </section>
-        </div>
-    );
-};
+const Score = ({ isModalOpen, users }) => (
+    <Modal isModalOpen={isModalOpen}>
+        <h3>{ 'Scores:' }</h3>
+        <ul>
+            {users.sort(orderByScore).map(user => (
+                <li>{`${user.username} - ${user.score}`}</li>
+            ))}
+        </ul>
+    </Modal>
+);
 
 Score.propTypes = {
     isModalOpen: PropTypes.bool.isRequired,

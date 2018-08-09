@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-class Color extends React.Component {
+class Color extends Component {
     handleColorClick = () => {
         const { onChangeColor, color } = this.props;
         onChangeColor(color);

@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-// import css from './App.scss';
 import { emitStartGame, subscribeToStartGame } from '../../socket';
 import { pages } from '../../constants';
 

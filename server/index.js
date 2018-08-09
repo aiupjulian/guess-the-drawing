@@ -21,8 +21,9 @@ io.on('connection', (socket) => {
     let play;
 
     // LOGIN
-    socket.on('add user', (username) => {
-        socket.username = username; // eslint-disable-line
+    socket.on('add user', (user) => {
+        socket.join(user.room);
+        socket.username = user.username; // eslint-disable-line
         socket.score = 0; // eslint-disable-line
         usersEmit();
     });
@@ -53,6 +54,11 @@ io.on('connection', (socket) => {
         const emitPlays = async () => {
             play = round.pop();
             io.emit('play', play);
+            await sleep(secondsToMiliseconds(showWordTimeInSeconds));
+            if (!play.word) {
+                play.word = play.words[0]; // eslint-disable-line
+            }
+            io.emit('word chosen', play);
             await sleep(secondsToMiliseconds(playTimeInSeconds));
             play = null;
             if (round.length) {
@@ -65,6 +71,12 @@ io.on('connection', (socket) => {
         };
 
         emitRounds();
+    });
+
+    socket.on('word chosen', (word) => {
+        if (play && !word) {
+            play.word = word;
+        }
     });
 
     // CANVAS
@@ -83,8 +95,8 @@ io.on('connection', (socket) => {
     // CHAT
     socket.on('message', (message) => {
         const { username } = socket;
-        if (play && username !== play.username && message === play.words[0]) {
-            if (!play.usersThatScored.includes(username)) {
+        if (play && message === play.word) {
+            if (username !== play.username && !play.usersThatScored.includes(username)) {
                 socket.score += 10; // eslint-disable-line
                 usersEmit();
             }
