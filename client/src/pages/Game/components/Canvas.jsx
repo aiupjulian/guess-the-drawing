@@ -8,6 +8,7 @@ import {
     emitUndoCanvas,
     subscribeToClearCanvas,
     subscribeToDrawing,
+    subscribeToPlay,
     subscribeToUndoCanvas,
 } from '../../../socket';
 
@@ -80,6 +81,7 @@ class Canvas extends React.Component {
         });
         subscribeToClearCanvas(() => { this.handleClearCanvas(); });
         subscribeToUndoCanvas(() => { this.handleUndoCanvas(); });
+        subscribeToPlay(() => { this.handleClearCanvas(); });
         this.onResize();
     }
 
