@@ -1,4 +1,5 @@
 const express = require('express');
+const uuidv4 = require('uuid/v4');
 
 const app = express();
 const http = require('http').Server(app);
@@ -7,30 +8,32 @@ require('dotenv').config();
 const { getRounds } = require('./play');
 const { time } = require('../shared/constants');
 
-const getUsers = () => (
-    Object.values(io.sockets.connected)
-        .filter(connectedSocket => connectedSocket.username)
-        .map(({ username, score }) => ({ username, score }))
-);
-
-const emitUsers = () => {
-    io.emit(
-        'users',
-        getUsers(),
-    );
-};
-
 const sleep = seconds => new Promise(resolve => setTimeout(resolve, seconds * 1000));
 
 const race = promises => Promise.race(promises);
 
+const rooms = new Map();
+let newGame = uuidv4();
+let play;
 let resolveAllUsersGuessed;
 let resolveWordPicked;
 
-let play;
 io.on('connection', (socket) => {
+    let room = newGame;
+    const getFromRoom = property => rooms.get(room)[property];
+    const setFromRoom = obj => rooms.set(room, { ...rooms.get(room), ...obj });
+
+    const getUsers = () => (
+        Object.values(io.sockets.connected)
+            .filter(connectedSocket => connectedSocket.username)
+            .map(({ username, score }) => ({ username, score }))
+    );
+
+    const emitUsers = () => io.to(room).emit('users', getUsers());
+
     // LOGIN
     socket.on('add user', (username) => {
+        socket.join(room);
         socket.username = username; // eslint-disable-line
         socket.score = 0; // eslint-disable-line
         emitUsers();
@@ -38,7 +41,13 @@ io.on('connection', (socket) => {
 
     // LOBBY
     socket.on('start game', () => {
-        socket.broadcast.emit('start game');
+        socket.to(room).emit('start game');
+        rooms.set(newGame, {
+            play,
+            resolveAllUsersGuessed,
+            resolveWordPicked,
+        });
+        newGame = uuidv4();
 
         // GAME
         const connectedUsers = Object.values(io.sockets.connected)
@@ -50,14 +59,14 @@ io.on('connection', (socket) => {
 
         const emitRounds = async () => {
             round = rounds.pop();
-            io.emit('round');
+            io.to(room).emit('round');
             await sleep(time.SHOW_SCORE_SECONDS);
             emitPlays(); // eslint-disable-line
         };
 
         const emitPlays = async () => {
             play = round.pop();
-            io.emit('play', play);
+            io.to(room).emit('play', play);
             const chooseWordPromise = new Promise((resolve) => {
                 resolveWordPicked = resolve;
             });
@@ -66,7 +75,7 @@ io.on('connection', (socket) => {
             if (!play.word) {
                 play.word = play.words[0]; // eslint-disable-line
             }
-            io.emit('word chosen', play);
+            io.to(room).emit('word chosen', play);
             const allUsersGuessedPromise = new Promise((resolve) => {
                 resolveAllUsersGuessed = resolve;
             });
@@ -77,7 +86,7 @@ io.on('connection', (socket) => {
             } else if (rounds.length) {
                 emitRounds();
             } else {
-                io.emit('round');
+                io.to(room).emit('round');
             }
         };
 
@@ -91,15 +100,15 @@ io.on('connection', (socket) => {
 
     // CANVAS
     socket.on('drawing', (data) => {
-        socket.broadcast.emit('drawing', data);
+        socket.to(room).emit('drawing', data);
     });
 
     socket.on('clear canvas', () => {
-        socket.broadcast.emit('clear canvas');
+        socket.to(room).emit('clear canvas');
     });
 
     socket.on('undo canvas', () => {
-        socket.broadcast.emit('undo canvas');
+        socket.to(room).emit('undo canvas');
     });
 
     // CHAT
@@ -114,7 +123,7 @@ io.on('connection', (socket) => {
                 emitUsers();
             }
         } else {
-            socket.broadcast.emit('message', {
+            socket.to(room).emit('message', {
                 username,
                 message,
             });
