@@ -7,12 +7,16 @@ require('dotenv').config();
 const { getRounds } = require('./play');
 const { time } = require('../shared/constants');
 
+const getUsers = () => (
+    Object.values(io.sockets.connected)
+        .filter(connectedSocket => connectedSocket.username)
+        .map(({ username, score }) => ({ username, score }))
+);
+
 const emitUsers = () => {
     io.emit(
         'users',
-        Object.values(io.sockets.connected)
-            .filter(connectedSocket => connectedSocket.username)
-            .map(({ username, score }) => ({ username, score })),
+        getUsers(),
     );
 };
 
@@ -103,9 +107,7 @@ io.on('connection', (socket) => {
         const { username } = socket;
         if (play && message === play.word) {
             if (username !== play.username && !play.usersThatScored.includes(username)) {
-                const usersLength = Object.values(io.sockets.connected)
-                    .filter(connectedSocket => connectedSocket.username).length;
-                if (play.usersThatScored.push(username) === usersLength - 1) {
+                if (play.usersThatScored.push(username) === getUsers().length - 1) {
                     resolveAllUsersGuessed();
                 }
                 socket.score += 10; // eslint-disable-line
