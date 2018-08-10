@@ -5,26 +5,29 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 require('dotenv').config();
 const { getRounds } = require('./play');
-
-const getUsers = () => Object.values(io.sockets.connected)
-    .filter(connectedSocket => connectedSocket.username)
-    .map(({ username, score }) => ({ username, score }));
+const { time } = require('../shared/constants');
 
 const emitUsers = () => {
     io.emit(
         'users',
-        getUsers(),
+        Object.values(io.sockets.connected)
+            .filter(connectedSocket => connectedSocket.username)
+            .map(({ username, score }) => ({ username, score })),
     );
 };
 
-const sleep = miliseconds => new Promise(resolve => setTimeout(resolve, miliseconds));
+const sleep = seconds => new Promise(resolve => setTimeout(resolve, seconds * 1000));
 
+const race = promises => Promise.race(promises);
+
+let resolveAllUsersGuessed;
+let resolveWordPicked;
+
+let play;
 io.on('connection', (socket) => {
-    let play;
-
     // LOGIN
-    socket.on('add user', (user) => {
-        socket.username = user.username; // eslint-disable-line
+    socket.on('add user', (username) => {
+        socket.username = username; // eslint-disable-line
         socket.score = 0; // eslint-disable-line
         emitUsers();
     });
@@ -38,29 +41,32 @@ io.on('connection', (socket) => {
             .filter(connectedSocket => connectedSocket.username)
             .map(({ username }) => username);
         const roundQuantity = 3;
-        const showWordTimeInSeconds = 10;
-        const playTimeInSeconds = 12;
-        const showScoreTimeInSeconds = 5;
-        const secondsToMiliseconds = seconds => seconds * 1000;
         const rounds = getRounds(roundQuantity, connectedUsers);
         let round;
 
         const emitRounds = async () => {
             round = rounds.pop();
             io.emit('round');
-            await sleep(secondsToMiliseconds(showScoreTimeInSeconds));
+            await sleep(time.SHOW_SCORE_SECONDS);
             emitPlays(); // eslint-disable-line
         };
 
         const emitPlays = async () => {
             play = round.pop();
             io.emit('play', play);
-            await sleep(secondsToMiliseconds(showWordTimeInSeconds));
+            const chooseWordPromise = new Promise((resolve) => {
+                resolveWordPicked = resolve;
+            });
+            await race([chooseWordPromise, sleep(time.SHOW_WORD_SECONDS)]);
+            // also could skip player
             if (!play.word) {
                 play.word = play.words[0]; // eslint-disable-line
             }
             io.emit('word chosen', play);
-            await sleep(secondsToMiliseconds(playTimeInSeconds));
+            const allUsersGuessedPromise = new Promise((resolve) => {
+                resolveAllUsersGuessed = resolve;
+            });
+            await race([allUsersGuessedPromise, sleep(time.PLAY_SECONDS)]);
             play = null;
             if (round.length) {
                 emitPlays();
@@ -75,9 +81,8 @@ io.on('connection', (socket) => {
     });
 
     socket.on('word chosen', (word) => {
-        if (play && !word) {
-            play.word = word;
-        }
+        play.word = word;
+        resolveWordPicked();
     });
 
     // CANVAS
@@ -98,6 +103,11 @@ io.on('connection', (socket) => {
         const { username } = socket;
         if (play && message === play.word) {
             if (username !== play.username && !play.usersThatScored.includes(username)) {
+                const usersLength = Object.values(io.sockets.connected)
+                    .filter(connectedSocket => connectedSocket.username).length;
+                if (play.usersThatScored.push(username) === usersLength - 1) {
+                    resolveAllUsersGuessed();
+                }
                 socket.score += 10; // eslint-disable-line
                 emitUsers();
             }

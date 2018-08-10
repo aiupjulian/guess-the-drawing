@@ -11,6 +11,7 @@ import {
     subscribeToRound,
     subscribeToWordChosen,
 } from '../../socket';
+import { time } from '../../../../shared/constants';
 
 class Game extends React.Component {
     constructor(props) {
@@ -19,6 +20,7 @@ class Game extends React.Component {
     }
 
     state = {
+        currentTime: 0,
         isChooseWordModalOpen: false,
         isScoreModalOpen: true,
         offsetHeight: 0,
@@ -35,10 +37,24 @@ class Game extends React.Component {
                 isChooseWordModalOpen: username === play.username,
                 isScoreModalOpen: false,
                 play,
+                currentTime: time.SHOW_WORD_SECONDS,
             });
         });
-        subscribeToRound(() => { this.setState({ play: {}, isScoreModalOpen: true }); });
-        subscribeToWordChosen((play) => { this.setState({ play }); });
+        subscribeToRound(() => {
+            this.setState({
+                currentTime: time.SHOW_SCORE_SECONDS,
+                isScoreModalOpen: true,
+                play: {},
+            });
+        });
+        subscribeToWordChosen((play) => {
+            this.setState({
+                currentTime: time.PLAY_SECONDS,
+                isChooseWordModalOpen: false,
+                play,
+            });
+        });
+        this.interval = setInterval(() => this.tick(), 1000);
     }
 
     onResize = () => {
@@ -46,6 +62,15 @@ class Game extends React.Component {
             offsetHeight: this.canvas.current.offsetHeight,
             offsetWidth: this.canvas.current.offsetWidth,
         });
+    };
+
+    tick = () => {
+        const { currentTime } = this.state;
+        if (currentTime !== 0) {
+            this.setState(prevState => ({
+                currentTime: prevState.currentTime - 1,
+            }));
+        }
     };
 
     handleCloseChooseWordModal = (word) => {
@@ -56,6 +81,7 @@ class Game extends React.Component {
     render() {
         const { username, users } = this.props;
         const {
+            currentTime,
             isChooseWordModalOpen,
             isScoreModalOpen,
             offsetHeight,
@@ -66,7 +92,9 @@ class Game extends React.Component {
         return (
             <Fragment>
                 <div className={css.statusBar}>
-                    {play.username} {play.word} {'||||'} {play.words} {'tiempo'}
+                    {play.username}
+                    {play.word && (play.username === username ? play.word : play.word.replace(/\w/g, '_'))}
+                    {currentTime}
                 </div>
                 <div
                     className={css.canvas}
