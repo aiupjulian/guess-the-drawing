@@ -6,12 +6,14 @@ const io = require('socket.io')(http);
 require('dotenv').config();
 const { getRounds } = require('./play');
 
-const usersEmit = () => {
+const getUsers = () => Object.values(io.sockets.connected)
+    .filter(connectedSocket => connectedSocket.username)
+    .map(({ username, score }) => ({ username, score }));
+
+const emitUsers = () => {
     io.emit(
         'users',
-        Object.values(io.sockets.connected)
-            .filter(connectedSocket => connectedSocket.username)
-            .map(({ username, score }) => ({ username, score })),
+        getUsers(),
     );
 };
 
@@ -22,10 +24,9 @@ io.on('connection', (socket) => {
 
     // LOGIN
     socket.on('add user', (user) => {
-        socket.join(user.room);
         socket.username = user.username; // eslint-disable-line
         socket.score = 0; // eslint-disable-line
-        usersEmit();
+        emitUsers();
     });
 
     // LOBBY
@@ -66,7 +67,7 @@ io.on('connection', (socket) => {
             } else if (rounds.length) {
                 emitRounds();
             } else {
-                // io.emit('round');
+                io.emit('round');
             }
         };
 
@@ -98,7 +99,7 @@ io.on('connection', (socket) => {
         if (play && message === play.word) {
             if (username !== play.username && !play.usersThatScored.includes(username)) {
                 socket.score += 10; // eslint-disable-line
-                usersEmit();
+                emitUsers();
             }
         } else {
             socket.broadcast.emit('message', {
@@ -108,7 +109,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('disconnect', usersEmit);
+    socket.on('disconnect', () => emitUsers);
 });
 
 const {

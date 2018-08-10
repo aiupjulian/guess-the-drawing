@@ -21,10 +21,9 @@ class Login extends React.Component {
     handleUsernameSubmit = () => {
         const { changePage, setUsername } = this.props;
         const { username } = this.state;
-        const room = window.location.search && window.location.search.slice(1);
-        if (username && room) {
+        if (username) {
             setUsername(username);
-            emitAddUser({ username, room });
+            emitAddUser(username);
             changePage(pages.LOBBY);
         }
     };
