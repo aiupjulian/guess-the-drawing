@@ -4,6 +4,11 @@ import css from './Chat.scss';
 import { emitMessage, subscribeToMessage } from '../../../socket';
 
 class Chat extends React.Component {
+    constructor(props) {
+        super(props);
+        this.messages = React.createRef();
+    }
+
     state = {
         messageInput: '',
         messages: [],
@@ -11,6 +16,7 @@ class Chat extends React.Component {
 
     componentDidMount() {
         subscribeToMessage((message) => {
+            this.messages.current.scrollTop = this.messages.current.scrollHeight;
             this.setState(prevState => ({ messages: prevState.messages.concat(message) }));
         });
     }
@@ -38,11 +44,10 @@ class Chat extends React.Component {
 
     render() {
         const { messageInput, messages } = this.state;
-        // messages.scrollTop = messages.scrollHeight;
 
         return (
             <Fragment>
-                <ul className={css.messages}>
+                <ul className={css.messages} ref={this.messages}>
                     {messages.map(message => (
                         <li>
                             <span className={this.getUsernameColor(message.username)}>

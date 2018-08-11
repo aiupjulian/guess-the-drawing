@@ -12,6 +12,13 @@ const sleep = seconds => new Promise(resolve => setTimeout(resolve, seconds * 10
 
 const race = promises => Promise.race(promises);
 
+const getSockets = (room) => {
+    const users = (io.sockets.adapter.rooms[room] && io.sockets.adapter.rooms[room].sockets) || {};
+    return Object.entries(users)
+        .filter(([status]) => status)
+        .map(([id]) => io.sockets.connected[id]);
+};
+
 const rooms = new Map();
 let newGame = uuidv4();
 let play;
@@ -19,12 +26,12 @@ let resolveAllUsersGuessed;
 let resolveWordPicked;
 
 io.on('connection', (socket) => {
-    let room = newGame;
+    const room = newGame;
     const getFromRoom = property => rooms.get(room)[property];
     const setFromRoom = obj => rooms.set(room, { ...rooms.get(room), ...obj });
 
     const getUsers = () => (
-        Object.values(io.sockets.connected)
+        Object.values(getSockets(room))
             .filter(connectedSocket => connectedSocket.username)
             .map(({ username, score }) => ({ username, score }))
     );
@@ -34,6 +41,7 @@ io.on('connection', (socket) => {
     // LOGIN
     socket.on('add user', (username) => {
         socket.join(room);
+        console.log(io.sockets.adapter.rooms[room].sockets);
         socket.username = username; // eslint-disable-line
         socket.score = 0; // eslint-disable-line
         emitUsers();
@@ -114,7 +122,7 @@ io.on('connection', (socket) => {
     // CHAT
     socket.on('message', (message) => {
         const { username } = socket;
-        if (play && message === play.word) {
+        if (play && message.toLowerCase() === play.word.toLowerCase()) {
             if (username !== play.username && !play.usersThatScored.includes(username)) {
                 if (play.usersThatScored.push(username) === getUsers().length - 1) {
                     resolveAllUsersGuessed();
