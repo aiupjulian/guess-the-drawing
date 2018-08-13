@@ -10,7 +10,7 @@ const getRounds = (roundsQuantity, users) => {
         round => round.map(
             (userRound, index) => (
                 {
-                    username: users[index],
+                    username: users[index].username,
                     words: getRandomWords(wordsQuantity),
                     word: '',
                     usersThatScored: [],

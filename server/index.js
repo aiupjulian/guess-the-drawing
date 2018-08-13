@@ -19,29 +19,23 @@ const getSockets = (room) => {
         .map(([id]) => io.sockets.connected[id]);
 };
 
-const rooms = new Map();
+const getUsers = room => (
+    Object.values(getSockets(room))
+        .filter(connectedSocket => connectedSocket.username)
+        .map(({ username, score }) => ({ username, score }))
+);
+
 let newGame = uuidv4();
-let play;
-let resolveAllUsersGuessed;
-let resolveWordPicked;
 
 io.on('connection', (socket) => {
-    const room = newGame;
-    const getFromRoom = property => rooms.get(room)[property];
-    const setFromRoom = obj => rooms.set(room, { ...rooms.get(room), ...obj });
+    let room;
 
-    const getUsers = () => (
-        Object.values(getSockets(room))
-            .filter(connectedSocket => connectedSocket.username)
-            .map(({ username, score }) => ({ username, score }))
-    );
-
-    const emitUsers = () => io.to(room).emit('users', getUsers());
+    const emitUsers = () => io.to(room).emit('users', getUsers(room));
 
     // LOGIN
     socket.on('add user', (username) => {
+        room = newGame;
         socket.join(room);
-        console.log(io.sockets.adapter.rooms[room].sockets);
         socket.username = username; // eslint-disable-line
         socket.score = 0; // eslint-disable-line
         emitUsers();
@@ -50,17 +44,13 @@ io.on('connection', (socket) => {
     // LOBBY
     socket.on('start game', () => {
         socket.to(room).emit('start game');
-        rooms.set(newGame, {
-            play,
-            resolveAllUsersGuessed,
-            resolveWordPicked,
-        });
+        let play;
+        let resolveAllUsersGuessed;
+        let resolveWordPicked;
         newGame = uuidv4();
 
         // GAME
-        const connectedUsers = Object.values(io.sockets.connected)
-            .filter(connectedSocket => connectedSocket.username)
-            .map(({ username }) => username);
+        const connectedUsers = getUsers(room);
         const roundQuantity = 3;
         const rounds = getRounds(roundQuantity, connectedUsers);
         let round;
@@ -98,12 +88,31 @@ io.on('connection', (socket) => {
             }
         };
 
-        emitRounds();
-    });
+        // CHAT
+        socket.on('message', (message) => {
+            const { username } = socket;
+            if (play && message.toLowerCase() === play.word.toLowerCase()) {
+                if (username !== play.username && !play.usersThatScored.includes(username)) {
+                    if (play.usersThatScored.push(username) === getUsers(room).length - 1) {
+                        resolveAllUsersGuessed();
+                    }
+                    socket.score += 10; // eslint-disable-line
+                    emitUsers();
+                }
+            } else {
+                socket.to(room).emit('message', {
+                    username,
+                    message,
+                });
+            }
+        });
 
-    socket.on('word chosen', (word) => {
-        play.word = word;
-        resolveWordPicked();
+        socket.on('word chosen', (word) => {
+            play.word = word;
+            resolveWordPicked();
+        });
+
+        emitRounds();
     });
 
     // CANVAS
@@ -117,25 +126,6 @@ io.on('connection', (socket) => {
 
     socket.on('undo canvas', () => {
         socket.to(room).emit('undo canvas');
-    });
-
-    // CHAT
-    socket.on('message', (message) => {
-        const { username } = socket;
-        if (play && message.toLowerCase() === play.word.toLowerCase()) {
-            if (username !== play.username && !play.usersThatScored.includes(username)) {
-                if (play.usersThatScored.push(username) === getUsers().length - 1) {
-                    resolveAllUsersGuessed();
-                }
-                socket.score += 10; // eslint-disable-line
-                emitUsers();
-            }
-        } else {
-            socket.to(room).emit('message', {
-                username,
-                message,
-            });
-        }
     });
 
     socket.on('disconnect', () => emitUsers);

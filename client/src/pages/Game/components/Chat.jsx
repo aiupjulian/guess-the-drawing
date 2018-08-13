@@ -16,14 +16,20 @@ class Chat extends React.Component {
 
     componentDidMount() {
         subscribeToMessage((message) => {
-            this.messages.current.scrollTop = this.messages.current.scrollHeight;
-            this.setState(prevState => ({ messages: prevState.messages.concat(message) }));
+            this.setState(
+                prevState => ({ messages: prevState.messages.concat(message) }),
+                () => { this.scrollMessages(); },
+            );
         });
     }
 
     getUsernameColor = (messageUsername) => {
         const { username } = this.props;
         return messageUsername === username ? css.userMessage : css.othersMessage;
+    };
+
+    scrollMessages = () => {
+        this.messages.current.scrollTop = this.messages.current.scrollHeight;
     };
 
     handleMessageChange = (event) => {
@@ -38,6 +44,8 @@ class Chat extends React.Component {
             this.setState({
                 messageInput: '',
                 messages: messages.concat({ username, message: messageInput }),
+            }, () => {
+                this.scrollMessages();
             });
         }
     };
