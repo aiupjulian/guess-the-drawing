@@ -28,14 +28,12 @@ const getUsers = room => (
 let newGame = uuidv4();
 
 io.on('connection', (socket) => {
-    let room;
-
-    const emitUsers = () => io.to(room).emit('users', getUsers(room));
+    const emitUsers = () => io.to(socket.room).emit('users', getUsers(socket.room));
 
     // LOGIN
     socket.on('add user', (username) => {
-        room = newGame;
-        socket.join(room);
+        socket.room = newGame; // eslint-disable-line
+        socket.join(socket.room);
         socket.username = username; // eslint-disable-line
         socket.score = 0; // eslint-disable-line
         emitUsers();
@@ -43,89 +41,86 @@ io.on('connection', (socket) => {
 
     // LOBBY
     socket.on('start game', () => {
-        socket.to(room).emit('start game');
-        let play;
-        let resolveAllUsersGuessed;
-        let resolveWordPicked;
+        socket.to(socket.room).emit('start game');
         newGame = uuidv4();
 
         // GAME
-        const connectedUsers = getUsers(room);
+        const connectedUsers = getUsers(socket.room);
         const roundQuantity = 3;
         const rounds = getRounds(roundQuantity, connectedUsers);
         let round;
 
         const emitRounds = async () => {
             round = rounds.pop();
-            io.to(room).emit('round');
+            io.to(socket.room).emit('round');
             await sleep(time.SHOW_SCORE_SECONDS);
             emitPlays(); // eslint-disable-line
         };
 
         const emitPlays = async () => {
-            play = round.pop();
-            io.to(room).emit('play', play);
+            io.sockets.adapter.rooms[socket.room].play = round.pop();
+            io.to(socket.room).emit('play', io.sockets.adapter.rooms[socket.room].play);
             const chooseWordPromise = new Promise((resolve) => {
-                resolveWordPicked = resolve;
+                io.sockets.adapter.rooms[socket.room].resolveWordPicked = resolve;
             });
             await race([chooseWordPromise, sleep(time.SHOW_WORD_SECONDS)]);
             // also could skip player
-            if (!play.word) {
-                play.word = play.words[0]; // eslint-disable-line
+            if (!io.sockets.adapter.rooms[socket.room].play.word) {
+                io.sockets.adapter.rooms[socket.room].play.word = io.sockets.adapter.rooms[socket.room].play.words[0]; // eslint-disable-line
             }
-            io.to(room).emit('word chosen', play);
+            io.to(socket.room).emit('word chosen', io.sockets.adapter.rooms[socket.room].play);
             const allUsersGuessedPromise = new Promise((resolve) => {
-                resolveAllUsersGuessed = resolve;
+                io.sockets.adapter.rooms[socket.room].resolveAllUsersGuessed = resolve;
             });
             await race([allUsersGuessedPromise, sleep(time.PLAY_SECONDS)]);
-            play = null;
+            io.sockets.adapter.rooms[socket.room].play = null;
             if (round.length) {
                 emitPlays();
             } else if (rounds.length) {
                 emitRounds();
             } else {
-                io.to(room).emit('round');
+                io.to(socket.room).emit('round');
             }
         };
-
-        // CHAT
-        socket.on('message', (message) => {
-            const { username } = socket;
-            if (play && message.toLowerCase() === play.word.toLowerCase()) {
-                if (username !== play.username && !play.usersThatScored.includes(username)) {
-                    if (play.usersThatScored.push(username) === getUsers(room).length - 1) {
-                        resolveAllUsersGuessed();
-                    }
-                    socket.score += 10; // eslint-disable-line
-                    emitUsers();
-                }
-            } else {
-                socket.to(room).emit('message', {
-                    username,
-                    message,
-                });
-            }
-        });
-
-        socket.on('word chosen', (word) => {
-            play.word = word;
-            resolveWordPicked();
-        });
 
         emitRounds();
     });
 
+    socket.on('word chosen', (word) => {
+        io.sockets.adapter.rooms[socket.room].play.word = word;
+        io.sockets.adapter.rooms[socket.room].resolveWordPicked();
+    });
+
+    // CHAT
+    socket.on('message', (message) => {
+        const { username } = socket;
+        if (io.sockets.adapter.rooms[socket.room].play && message.toLowerCase() === io.sockets.adapter.rooms[socket.room].play.word.toLowerCase()) {
+            if (username !== io.sockets.adapter.rooms[socket.room].play.username && !io.sockets.adapter.rooms[socket.room].play.usersThatScored.includes(username)) {
+                if (io.sockets.adapter.rooms[socket.room].play.usersThatScored.push(username) === getUsers(socket.room).length - 1) {
+                    io.sockets.adapter.rooms[socket.room].resolveAllUsersGuessed();
+                }
+                socket.score += 10; // eslint-disable-line
+                emitUsers();
+            }
+        } else {
+            socket.to(socket.room).emit('message', {
+                username,
+                message,
+            });
+        }
+    });
+
     // CANVAS
     socket.on('drawing', (data) => {
-        socket.to(room).emit('drawing', data);
+        socket.to(socket.room).emit('drawing', data);
     });
 
     socket.on('clear canvas', () => {
-        socket.to(room).emit('clear canvas');
+        socket.to(socket.room).emit('clear canvas');
     });
 
     socket.on('undo canvas', () => {
-        socket.to(room).emit('undo canvas');
+        socket.to(socket.room).emit('undo canvas');
     });
 
     socket.on('disconnect', () => emitUsers);
