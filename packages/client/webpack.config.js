@@ -2,10 +2,9 @@ const path = require('path');
 const { DefinePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-require('dotenv').config();
+require('dotenv').config({ path: path.resolve(process.cwd(), '../../.env') });
 
-const parentDirectory = __dirname;
-const clientDirectory = path.join(parentDirectory, 'client');
+const clientDirectory = __dirname;
 const clientOutputDirectory = path.join(clientDirectory, 'dist');
 
 const mode = 'development';
