@@ -7,47 +7,51 @@ import css from './Options.scss';
 import Color from './Color';
 
 class Options extends React.Component {
-    handleClearCanvas = () => {
-        const { onClearCanvas } = this.props;
-        onClearCanvas(true);
-    }
+  handleClearCanvas = () => {
+    const { onClearCanvas } = this.props;
+    onClearCanvas(true);
+  };
 
-    handleUndoCanvas = () => {
-        const { onUndoCanvas } = this.props;
-        onUndoCanvas(true);
-    }
+  handleUndoCanvas = () => {
+    const { onUndoCanvas } = this.props;
+    onUndoCanvas(true);
+  };
 
-    render() {
-        const { onChangeColor } = this.props;
+  render() {
+    const { onChangeColor } = this.props;
 
-        return (
-            <Fragment>
-                {colors.map(color => (
-                    <Color color={color} onChangeColor={onChangeColor} className={css.option} />
-                ))}
-                <button
-                    type="button"
-                    className={`${css.option} `}
-                    onClick={this.handleUndoCanvas}
-                >
-                    <FontAwesomeIcon icon={faUndo} size="lg" />
-                </button>
-                <button
-                    type="button"
-                    className={css.option}
-                    onClick={this.handleClearCanvas}
-                >
-                    <FontAwesomeIcon icon={faTrashAlt} size="lg" />
-                </button>
-            </Fragment>
-        );
-    }
+    return (
+      <Fragment>
+        {colors.map(color => (
+          <Color
+            color={color}
+            onChangeColor={onChangeColor}
+            className={css.option}
+          />
+        ))}
+        <button
+          type="button"
+          className={`${css.option} `}
+          onClick={this.handleUndoCanvas}
+        >
+          <FontAwesomeIcon icon={faUndo} size="lg" />
+        </button>
+        <button
+          type="button"
+          className={css.option}
+          onClick={this.handleClearCanvas}
+        >
+          <FontAwesomeIcon icon={faTrashAlt} size="lg" />
+        </button>
+      </Fragment>
+    );
+  }
 }
 
 Options.propTypes = {
-    onChangeColor: PropTypes.func.isRequired,
-    onClearCanvas: PropTypes.func.isRequired,
-    onUndoCanvas: PropTypes.func.isRequired,
+  onChangeColor: PropTypes.func.isRequired,
+  onClearCanvas: PropTypes.func.isRequired,
+  onUndoCanvas: PropTypes.func.isRequired
 };
 
 export default Options;

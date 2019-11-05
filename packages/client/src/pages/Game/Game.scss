@@ -1,21 +1,21 @@
 // STATUS BAR
 .statusBar {
-    width: 100%;
-    height: 5%;
+  width: 100%;
+  height: 5%;
 }
 
 // CANVAS
 .canvas {
-    position: relative;
-    width: 100%;
-    height: 65%;
+  position: relative;
+  width: 100%;
+  height: 65%;
 }
 
 // CHAT
 .chat {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
-    height: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 30%;
 }
