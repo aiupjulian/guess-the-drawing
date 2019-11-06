@@ -4,6 +4,11 @@ const time = {
   SHOW_SCORE_SECONDS: 5,
 };
 
+const events = {
+  asd: '',
+};
+
 module.exports = {
   time,
+  events,
 };

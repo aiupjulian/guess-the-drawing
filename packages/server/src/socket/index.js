@@ -1,12 +1,14 @@
 const baseIO = require('socket.io');
+const { constants } = require('canvas-shared');
 const { getRounds } = require('../play');
-const { time } = require('../../../shared/constants');
 const {
   sleep,
   race,
   getUsers,
   gameId,
 } = require('../utils');
+
+const { time } = constants;
 
 function setSocketIO(http) {
   const io = baseIO(http);

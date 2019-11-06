@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { constants } from 'canvas-shared';
 import Chat from './components/Chat';
 import Canvas from './components/Canvas';
 import ScoreModal from './components/ScoreModal';
@@ -9,9 +10,10 @@ import {
   emitWordChosen,
   subscribeToPlay,
   subscribeToRound,
-  subscribeToWordChosen
+  subscribeToWordChosen,
 } from '../../socket';
-import { time } from '../../../../shared/constants';
+
+const { time } = constants;
 
 class Game extends React.Component {
   constructor(props) {
