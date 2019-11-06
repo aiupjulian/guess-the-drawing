@@ -343,5 +343,5 @@ module.exports = [
   'wristwatch',
   'yoga',
   'zebra',
-  'zigzag'
+  'zigzag',
 ];

@@ -2,7 +2,7 @@ const path = require('path');
 const { DefinePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-require('dotenv').config({ path: path.resolve(process.cwd(), '../../.env') });
+require('dotenv').config({ path: path.resolve(process.cwd(), '../../.env') }); // eslint-disable-line import/no-extraneous-dependencies
 
 const clientDirectory = __dirname;
 const clientOutputDirectory = path.join(clientDirectory, 'dist');
@@ -20,7 +20,7 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         include: [clientDirectory],
-        loader: 'babel-loader'
+        loader: 'babel-loader',
       },
       {
         test: /\.scss$/,
@@ -30,38 +30,38 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              modules: true
-            }
+              modules: true,
+            },
           },
-          'sass-loader'
-        ]
-      }
-    ]
+          'sass-loader',
+        ],
+      },
+    ],
   },
   output: {
     path: clientOutputDirectory,
-    filename: 'bundle.js'
+    filename: 'bundle.js',
   },
   plugins: [
     new CleanWebpackPlugin([clientOutputDirectory]),
     new HtmlWebpackPlugin({
       template: path.join(clientDirectory, 'index.html'),
       favicon: path.join(clientDirectory, 'favicon.ico'),
-      meta: { viewport: 'width=device-width, initial-scale=1' }
+      meta: { viewport: 'width=device-width, initial-scale=1' },
     }),
     // SERVER CONFIG
     new DefinePlugin({
       SERVER_HOST: JSON.stringify(process.env.SERVER_HOST),
-      SERVER_PORT: JSON.stringify(process.env.SERVER_PORT)
-    })
+      SERVER_PORT: JSON.stringify(process.env.SERVER_PORT),
+    }),
   ],
   resolve: {
-    extensions: ['*', '.webpack.js', '.web.js', '.js', '.json', '.jsx']
+    extensions: ['*', '.webpack.js', '.web.js', '.js', '.json', '.jsx'],
   },
   // CLIENT CONFIG
   serve: {
     content: clientOutputDirectory,
     host: process.env.CLIENT_HOST,
-    port: process.env.CLIENT_PORT
-  }
+    port: process.env.CLIENT_PORT,
+  },
 };

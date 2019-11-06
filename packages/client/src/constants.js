@@ -1,7 +1,7 @@
 export const pages = {
   LOGIN: 'login',
   LOBBY: 'lobby',
-  GAME: 'game'
+  GAME: 'game',
 };
 
 export const colors = ['black', 'red', 'green', 'blue', 'yellow'];

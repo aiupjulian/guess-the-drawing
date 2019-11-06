@@ -62,5 +62,5 @@ export {
   subscribeToStartGame,
   subscribeToUndoCanvas,
   subscribeToUsers,
-  subscribeToWordChosen
+  subscribeToWordChosen,
 };
