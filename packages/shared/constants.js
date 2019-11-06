@@ -5,7 +5,17 @@ const time = {
 };
 
 const events = {
-  asd: '',
+  ADD_USER: 'add user',
+  CANVAS: 'canvas',
+  CLEAR_CANVAS: 'clear canvas',
+  DRAWING: 'drawing',
+  MESSAGE: 'message',
+  PLAY: 'play',
+  ROUND: 'round',
+  START_GAME: 'start game',
+  UNDO_CANVAS: 'undo canvas',
+  USERS: 'users',
+  WORD_CHOSEN: 'word chosen',
 };
 
 module.exports = {
