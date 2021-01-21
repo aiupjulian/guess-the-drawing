@@ -10,7 +10,7 @@
   "dependencies": {
     "canvas-shared": "^1.0.0",
     "express": "^4.16.3",
-    "socket.io": "^2.1.1",
+    "socket.io": "^2.4.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
